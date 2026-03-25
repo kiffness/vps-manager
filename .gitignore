@@ -1,2 +1,4 @@
 .claude
-vps-ui/
+venv/
+__pycache__/
+.env
