@@ -1,3 +1,5 @@
+import shutil
+
 from fastapi import APIRouter, HTTPException, status
 from pathlib import Path
 
@@ -71,3 +73,14 @@ async def write_content(body: WriteFileRequest):
     resolved.write_text(body.content, encoding="utf-8")
 
     return {"message": "File content succesfully updated"}
+
+@router.delete("/")
+async def delete(path: str = ""):
+    resolved = resolve_and_check(path)
+
+    if resolved.is_dir():
+        shutil.rmtree(resolved)
+    else:
+        resolved.unlink()
+
+    return {"message": "Deleted"}
