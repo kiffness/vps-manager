@@ -8,3 +8,7 @@ class ListDirectoryResponse(BaseModel):
 class FileContentResponse(BaseModel):
     path: str
     content: str
+
+class WriteFileRequest(BaseModel):
+    path: str
+    content: str

@@ -1,7 +1,7 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, status
 from pathlib import Path
 
-from app.models.files import ListDirectoryResponse, FileContentResponse
+from app.models.files import ListDirectoryResponse, FileContentResponse, WriteFileRequest
 from app.config import settings
 
 base = Path(settings.base_dir).resolve()
@@ -15,12 +15,15 @@ router = APIRouter(
         }
 )
 
-def resolve_and_check(path: str) -> Path:
+def resolve_and_check(path: str, check_exists: bool = True) -> Path:
       resolved = (base / path).resolve()
       if not resolved.is_relative_to(base):
           raise HTTPException(status_code=403, detail="Forbidden path")
-      if not resolved.exists():
-          raise HTTPException(status_code=404, detail="Path not found")
+      
+      if check_exists:
+        if not resolved.exists():
+            raise HTTPException(status_code=404, detail="Path not found")
+        
       return resolved
 
 @router.get("/",response_model=list[ListDirectoryResponse])
@@ -55,4 +58,16 @@ async def read_content(file: str = ""):
         return response
     except UnicodeDecodeError:
         raise HTTPException(status_code=400, detail="File is not utf-8")
+
+@router.put("/content", status_code=status.HTTP_200_OK)
+async def write_content(body: WriteFileRequest):
+    resolved = resolve_and_check(body.path, False)
+
+    if resolved.is_dir():
+      raise HTTPException(status_code=400, detail="Path is a directory")
+
+    resolved.parent.mkdir(parents=True, exist_ok=True)
     
+    resolved.write_text(body.content, encoding="utf-8")
+
+    return {"message": "File content succesfully updated"}
