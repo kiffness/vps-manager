@@ -5,5 +5,6 @@ class ListDirectoryResponse(BaseModel):
     type: str
     size: int = 0
 
-class ListDirectoryRequest(BaseModel):
-    path: str = ""
+class FileContentResponse(BaseModel):
+    path: str
+    content: str
