@@ -2,6 +2,8 @@ import logging
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 
 from app.config import settings
 from app.routers.files import router as files_router
@@ -30,6 +32,12 @@ app = FastAPI(
 
 app.include_router(files_router)
 app.include_router(docker_router)
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+@app.get("/")
+async def serve_index():
+    return FileResponse("static/index.html")
 
 @app.get("/health", tags=["Meta"])
 async def health_check():

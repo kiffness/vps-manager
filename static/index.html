@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VPS Manager</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+    <div id="breadcrumb">/</div>
+
+    <div id="file-list"></div>
+
+    <div id="editor-container">
+        <div id="editor-toolbar">
+            <span id="editor-filename"></span>
+            <button id="save-btn">Save</button>
+            <button id="close-btn">Close</button>
+        </div>
+        <div id="editor"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/loader.js"></script>
+    <script src="/static/app.js"></script>
+
+</body>
+</html>
