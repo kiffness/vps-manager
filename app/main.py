@@ -5,6 +5,7 @@ from fastapi import FastAPI
 
 from app.config import settings
 from app.routers.files import router as files_router
+from app.routers.docker_router import router as docker_router
 
 logging.basicConfig(
     level=settings.log_level.upper(),
@@ -28,6 +29,7 @@ app = FastAPI(
 )
 
 app.include_router(files_router)
+app.include_router(docker_router)
 
 @app.get("/health", tags=["Meta"])
 async def health_check():
