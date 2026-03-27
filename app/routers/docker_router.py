@@ -27,6 +27,7 @@ async def get_containers():
                 name=container.name,
                 status=container.status,
                 image=container.image.tags[0],
+                image_id=container.image.id,
             )
         )
 
@@ -55,7 +56,8 @@ async def container_action(body: ContainerActionRequest):
             id=container.id,
             name=container.name,
             status=container.status,
-            image=container.image.tags[0]
+            image=container.image.tags[0],
+            image_id=container.image.id,
         )
     except docker.errors.NotFound:
         raise HTTPException(status_code=404, detail="Container not found")
@@ -114,3 +116,13 @@ async def get_images():
         )
 
     return images_result
+
+@router.delete("/images/{image_id}")
+async def delete_image(image_id: str):
+    try:
+        client.images.remove(image_id)
+        return {"message": "Image deleted"}
+    except docker.errors.ImageNotFound:
+        raise HTTPException(status_code=404, detail="Image not found")
+    except docker.errors.APIError as e:
+        raise HTTPException(status_code=400, detail=str(e))

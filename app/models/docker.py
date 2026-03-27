@@ -6,6 +6,7 @@ class ContainerResponse(BaseModel):
     name: str
     status: str
     image: str
+    image_id: str
 
 class ContainerActionRequest(BaseModel):
     id: str

@@ -4,21 +4,69 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VPS Manager</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@vscode/codicons@0.0.36/dist/codicon.css">
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
 
-    <div id="breadcrumb">/</div>
+    <div id="tab-bar">
+        <button class="tab-btn active" data-tab="files">Files</button>
+        <button class="tab-btn" data-tab="docker">Docker</button>
+    </div>
 
-    <div id="file-list"></div>
+    <div id="tab-files" class="tab-section">
+        <div id="explorer-layout">
 
-    <div id="editor-container">
-        <div id="editor-toolbar">
-            <span id="editor-filename"></span>
-            <button id="save-btn">Save</button>
-            <button id="close-btn">Close</button>
+            <div id="file-tree-panel">
+                <div id="tree-header">EXPLORER</div>
+                <div id="file-tree"></div>
+            </div>
+
+            <div id="editor-panel">
+                <div id="editor-empty">
+                    <span class="codicon codicon-file-code"></span>
+                    <p>Select a file to open</p>
+                </div>
+                <div id="editor-container">
+                    <div id="editor-toolbar">
+                        <span class="codicon codicon-file" id="editor-file-icon"></span>
+                        <span id="editor-filename"></span>
+                        <div style="flex:1"></div>
+                        <button id="save-btn">Save</button>
+                        <button id="close-btn">Close</button>
+                    </div>
+                    <div id="editor"></div>
+                    <div id="status-msg"></div>
+                </div>
+            </div>
+
         </div>
-        <div id="editor"></div>
+    </div>
+
+    <div id="tab-docker" class="tab-section" style="display:none">
+        <div class="docker-section">
+            <div class="section-header">
+                <h2>Containers</h2>
+                <button id="refresh-docker-btn">Refresh</button>
+            </div>
+            <div id="container-list"></div>
+        </div>
+        <div class="docker-section">
+            <h2>Networks</h2>
+            <div id="network-list"></div>
+        </div>
+        <div class="docker-section">
+            <div class="section-header">
+                <h2>Images</h2>
+                <div class="filter-btns">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="used">In Use</button>
+                    <button class="filter-btn" data-filter="unused">Unused</button>
+                </div>
+                <button id="delete-unused-btn">Delete All Unused</button>
+            </div>
+            <div id="image-list"></div>
+        </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/loader.js"></script>
