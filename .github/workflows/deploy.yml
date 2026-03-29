@@ -13,7 +13,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Deploy
-        working-directory: /home/runner/vps-ui
+        working-directory: /home/runner/vps-manager
         run: |
           git pull
           docker compose up -d --build
