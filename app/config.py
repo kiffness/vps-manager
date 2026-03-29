@@ -9,4 +9,6 @@ class Settings(BaseSettings):
     # Base path
     base_dir: str = "/home/runner"
 
+    api_key: str
+
 settings = Settings()

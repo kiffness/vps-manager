@@ -1,0 +1,19 @@
+name: deploy
+
+on:
+  push:
+    branches:
+      - release/live
+
+jobs:
+  deploy:
+    runs-on: self-hosted
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Deploy
+        working-directory: /home/runner/vps-ui
+        run: |
+          git pull
+          docker compose up -d --build

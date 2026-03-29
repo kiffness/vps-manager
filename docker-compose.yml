@@ -1,0 +1,19 @@
+services:
+  vps-ui:
+    build: .
+    ports:
+      - 5001:5001
+    env_file:
+      - .env
+    volumes:
+      - /home/runner:/home/runner
+      - /var/run/docker.sock:/var/run/docker.sock
+    networks:
+      - default
+      - proxy
+    restart: unless-stopped
+
+networks:
+  default: {}
+  proxy:
+    external: true

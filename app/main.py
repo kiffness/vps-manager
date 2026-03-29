@@ -1,13 +1,14 @@
 import logging
 from contextlib import asynccontextmanager
 
-from fastapi import FastAPI
+from fastapi import FastAPI,Depends
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 
 from app.config import settings
 from app.routers.files import router as files_router
 from app.routers.docker_router import router as docker_router
+from app.dependancy.api_key_dependency import verify_api_key
 
 logging.basicConfig(
     level=settings.log_level.upper(),
@@ -30,8 +31,8 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-app.include_router(files_router)
-app.include_router(docker_router)
+app.include_router(files_router, dependencies=[Depends(verify_api_key)])
+app.include_router(docker_router, dependencies=[Depends(verify_api_key)])
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
