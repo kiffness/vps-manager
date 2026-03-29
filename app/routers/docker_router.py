@@ -81,6 +81,7 @@ async def get_networks():
     networks_result = []
 
     for network in client.networks.list():
+        network.reload()
         containers_name_list = []
 
         network_id = network.id

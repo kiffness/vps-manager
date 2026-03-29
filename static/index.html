@@ -21,6 +21,7 @@
     <div id="tab-bar">
         <button class="tab-btn active" data-tab="files">Files</button>
         <button class="tab-btn" data-tab="docker">Docker</button>
+        <button class="tab-btn" data-tab="server">Server</button>
         <div style="flex:1"></div>
         <button id="lock-btn" title="Lock">&#x1F512;</button>
     </div>
@@ -77,6 +78,29 @@
                 <button id="delete-unused-btn">Delete All Unused</button>
             </div>
             <div id="image-list"></div>
+        </div>
+    </div>
+
+    <div id="tab-server" class="tab-section" style="display:none">
+        <div class="docker-section">
+            <h2>Server Resources</h2>
+            <div class="resource-grid">
+                <div class="resource-card">
+                    <div class="resource-label">CPU</div>
+                    <div class="resource-value" id="cpu-value">—</div>
+                    <div class="resource-bar"><div class="resource-bar-fill" id="cpu-bar"></div></div>
+                </div>
+                <div class="resource-card">
+                    <div class="resource-label">Memory</div>
+                    <div class="resource-value" id="mem-value">—</div>
+                    <div class="resource-bar"><div class="resource-bar-fill" id="mem-bar"></div></div>
+                </div>
+                <div class="resource-card">
+                    <div class="resource-label">Disk</div>
+                    <div class="resource-value" id="disk-value">—</div>
+                    <div class="resource-bar"><div class="resource-bar-fill" id="disk-bar"></div></div>
+                </div>
+            </div>
         </div>
     </div>
 

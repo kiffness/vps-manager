@@ -64,6 +64,8 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
         document.querySelectorAll('.tab-section').forEach(s => s.style.display = 'none');
         document.getElementById(`tab-${tab}`).style.display = 'flex';
         if (tab === 'docker') loadDockerDashboard();
+        if (tab === 'server') startResourceStream();
+        else stopResourceStream();
     });
 });
 
@@ -472,6 +474,32 @@ function renderImages() {
         }
 
         list.appendChild(card);
+    }
+}
+
+// ── Server resources ──────────────────────────────────────────────────────────
+
+let resourceEventSource = null;
+
+function startResourceStream() {
+    if (resourceEventSource) return;
+    const key = getApiKey();
+    resourceEventSource = new EventSource(`/server-resources/stream?api_key=${encodeURIComponent(key)}`);
+    resourceEventSource.onmessage = (e) => {
+        const d = JSON.parse(e.data);
+        document.getElementById('cpu-value').textContent = `${d.cpu_percentage.toFixed(1)}%`;
+        document.getElementById('cpu-bar').style.width = `${d.cpu_percentage}%`;
+        document.getElementById('mem-value').textContent = `${d.memory_usage.toFixed(1)}%`;
+        document.getElementById('mem-bar').style.width = `${d.memory_usage}%`;
+        document.getElementById('disk-value').textContent = `${d.disk_used_gb} / ${d.disk_total_gb} GB (${d.disk_percent.toFixed(1)}%)`;
+        document.getElementById('disk-bar').style.width = `${d.disk_percent}%`;
+    };
+}
+
+function stopResourceStream() {
+    if (resourceEventSource) {
+        resourceEventSource.close();
+        resourceEventSource = null;
     }
 }
 
