@@ -3,6 +3,57 @@ let monacoEditor = null;
 const expandedPaths = new Set();
 const treeCache = {};
 
+// ── API key ───────────────────────────────────────────────────────────────────
+
+function getApiKey() {
+    return localStorage.getItem('vps_api_key') || '';
+}
+
+function apiFetch(url, options = {}) {
+    return fetch(url, {
+        ...options,
+        headers: {
+            ...options.headers,
+            'X-API-Key': getApiKey(),
+        },
+    });
+}
+
+// ── Lock screen ───────────────────────────────────────────────────────────────
+
+function showLockScreen() {
+    document.getElementById('lock-screen').style.display = 'flex';
+}
+
+function hideLockScreen() {
+    document.getElementById('lock-screen').style.display = 'none';
+}
+
+document.getElementById('unlock-btn').addEventListener('click', async () => {
+    const key = document.getElementById('api-key-input').value.trim();
+    if (!key) return;
+    const res = await fetch('/api/files/?path=', { headers: { 'X-API-Key': key } });
+    if (res.status !== 403) {
+        localStorage.setItem('vps_api_key', key);
+        document.getElementById('lock-error').style.display = 'none';
+        hideLockScreen();
+        refreshTree();
+    } else {
+        document.getElementById('lock-error').style.display = 'block';
+    }
+});
+
+document.getElementById('api-key-input').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') document.getElementById('unlock-btn').click();
+});
+
+document.getElementById('lock-btn').addEventListener('click', () => {
+    localStorage.removeItem('vps_api_key');
+    document.getElementById('api-key-input').value = '';
+    document.getElementById('lock-error').style.display = 'none';
+    showLockScreen();
+});
+
 // ── Tabs ──────────────────────────────────────────────────────────────────────
 
 document.querySelectorAll('.tab-btn').forEach(btn => {
@@ -20,7 +71,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
 
 async function fetchDirectory(path) {
     if (treeCache[path]) return treeCache[path];
-    const res = await fetch(`/api/files/?path=${encodeURIComponent(path)}`);
+    const res = await apiFetch(`/api/files/?path=${encodeURIComponent(path)}`);
     if (!res.ok) return [];
     const entries = await res.json();
     entries.sort((a, b) => {
@@ -138,7 +189,7 @@ async function refreshTree() {
 // ── File read / edit ──────────────────────────────────────────────────────────
 
 async function loadFile(path) {
-    const res = await fetch(`/api/files/content?file=${encodeURIComponent(path)}`);
+    const res = await apiFetch(`/api/files/content?file=${encodeURIComponent(path)}`);
     if (!res.ok) {
         showStatus(`Failed to load file: ${res.status}`, true);
         return;
@@ -194,7 +245,7 @@ function detectLanguage(path) {
 document.getElementById('save-btn').addEventListener('click', async () => {
     if (!monacoEditor || !currentFilePath) return;
 
-    const res = await fetch('/api/files/content', {
+    const res = await apiFetch('/api/files/content', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ path: currentFilePath, content: monacoEditor.getValue() }),
@@ -217,7 +268,7 @@ document.getElementById('close-btn').addEventListener('click', () => {
 async function deleteEntry(path, name) {
     if (!confirm(`Delete "${name}"?`)) return;
 
-    const res = await fetch(`/api/files/?path=${encodeURIComponent(path)}`, {
+    const res = await apiFetch(`/api/files/?path=${encodeURIComponent(path)}`, {
         method: 'DELETE',
     });
 
@@ -255,7 +306,7 @@ document.getElementById('refresh-docker-btn').addEventListener('click', loadDock
 // Containers
 
 async function loadContainers() {
-    const res = await fetch('/docker/containers');
+    const res = await apiFetch('/docker/containers');
     if (!res.ok) return;
     const containers = await res.json();
 
@@ -302,7 +353,7 @@ function makeActionBtn(label, cls, onClick) {
 }
 
 async function containerAction(id, action) {
-    const res = await fetch('/docker/containers', {
+    const res = await apiFetch('/docker/containers', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, action }),
@@ -316,7 +367,7 @@ async function toggleLogs(id, panel, btn) {
         btn.textContent = 'Logs';
         return;
     }
-    const res = await fetch(`/docker/containers/${id}`);
+    const res = await apiFetch(`/docker/containers/${id}`);
     if (!res.ok) return;
     const data = await res.json();
     panel.textContent = data.logs.join('\n');
@@ -328,7 +379,7 @@ async function toggleLogs(id, panel, btn) {
 // Networks
 
 async function loadNetworks() {
-    const res = await fetch('/docker/networks');
+    const res = await apiFetch('/docker/networks');
     if (!res.ok) return;
     const networks = await res.json();
 
@@ -367,15 +418,15 @@ document.getElementById('delete-unused-btn').addEventListener('click', async () 
     if (!unused.length) return;
     if (!confirm(`Delete ${unused.length} unused image(s)?`)) return;
     for (const img of unused) {
-        await fetch(`/docker/images/${encodeURIComponent(img.id)}`, { method: 'DELETE' });
+        await apiFetch(`/docker/images/${encodeURIComponent(img.id)}`, { method: 'DELETE' });
     }
     loadImages();
 });
 
 async function loadImages() {
     const [imgRes, conRes] = await Promise.all([
-        fetch('/docker/images'),
-        fetch('/docker/containers'),
+        apiFetch('/docker/images'),
+        apiFetch('/docker/containers'),
     ]);
     if (!imgRes.ok) return;
 
@@ -414,7 +465,7 @@ function renderImages() {
         if (!used) {
             const delBtn = makeActionBtn('Delete', 'stop', async () => {
                 if (!confirm(`Delete image ${tags}?`)) return;
-                const res = await fetch(`/docker/images/${encodeURIComponent(img.id)}`, { method: 'DELETE' });
+                const res = await apiFetch(`/docker/images/${encodeURIComponent(img.id)}`, { method: 'DELETE' });
                 if (res.ok) loadImages();
             });
             card.appendChild(delBtn);
@@ -426,4 +477,9 @@ function renderImages() {
 
 // ── Boot ──────────────────────────────────────────────────────────────────────
 
-refreshTree();
+if (getApiKey()) {
+    hideLockScreen();
+    refreshTree();
+} else {
+    showLockScreen();
+}

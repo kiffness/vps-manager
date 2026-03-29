@@ -9,9 +9,20 @@
 </head>
 <body>
 
+    <div id="lock-screen">
+        <div id="lock-card">
+            <div id="lock-title">VPS Manager</div>
+            <input type="password" id="api-key-input" placeholder="Enter API key" autofocus />
+            <button id="unlock-btn">Unlock</button>
+            <div id="lock-error">Invalid API key</div>
+        </div>
+    </div>
+
     <div id="tab-bar">
         <button class="tab-btn active" data-tab="files">Files</button>
         <button class="tab-btn" data-tab="docker">Docker</button>
+        <div style="flex:1"></div>
+        <button id="lock-btn" title="Lock">&#x1F512;</button>
     </div>
 
     <div id="tab-files" class="tab-section">

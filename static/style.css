@@ -18,6 +18,83 @@ body {
     flex-direction: column;
 }
 
+/* ── Lock screen ──────────────────────────────────────────────────────────── */
+
+#lock-screen {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+}
+
+#lock-card {
+    background: #252526;
+    border: 1px solid #3a3a3a;
+    border-radius: 6px;
+    padding: 32px 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 320px;
+}
+
+#lock-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #d4d4d4;
+    margin-bottom: 4px;
+    letter-spacing: 0.05em;
+}
+
+#api-key-input {
+    background: #1e1e1e;
+    border: 1px solid #3a3a3a;
+    color: #d4d4d4;
+    padding: 8px 10px;
+    border-radius: 3px;
+    font-family: inherit;
+    font-size: 13px;
+    outline: none;
+}
+
+#api-key-input:focus {
+    border-color: #007acc;
+}
+
+#unlock-btn {
+    background: #0e639c;
+    border: none;
+    color: #fff;
+    padding: 8px;
+    border-radius: 3px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 13px;
+}
+
+#unlock-btn:hover { background: #1177bb; }
+
+#lock-error {
+    display: none;
+    color: #e06c75;
+    font-size: 12px;
+}
+
+#lock-btn {
+    background: none;
+    border: none;
+    color: #555;
+    cursor: pointer;
+    padding: 8px 12px;
+    font-size: 14px;
+}
+
+#lock-btn:hover { color: #d4d4d4; }
+
 /* ── Tabs ─────────────────────────────────────────────────────────────────── */
 
 #tab-bar {
