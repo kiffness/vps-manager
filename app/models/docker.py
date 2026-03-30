@@ -26,3 +26,9 @@ class ImageResponse(BaseModel):
     id: str
     tags: list[str]
     size: int
+
+class VolumeResponse(BaseModel):
+    name: str
+    driver: str
+    mountpoint: str
+    in_use: bool

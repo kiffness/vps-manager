@@ -300,6 +300,7 @@ function showStatus(msg, isError = false) {
 function loadDockerDashboard() {
     loadContainers();
     loadNetworks();
+    loadVolumes();
     loadImages();
 }
 
@@ -400,6 +401,32 @@ async function loadNetworks() {
     }
 }
 
+// Volumes
+
+async function loadVolumes() {
+    const res = await apiFetch('/docker/volumes');
+    if (!res.ok) return;
+    const volumes = await res.json();
+
+    const list = document.getElementById('volume-list');
+    list.innerHTML = '';
+
+    for (const v of volumes) {
+        const card = document.createElement('div');
+        card.className = 'network-card card-row';
+        const badge = v.in_use
+            ? '<span class="status-badge running">in use</span>'
+            : '<span class="status-badge stopped">unused</span>';
+        card.innerHTML = `
+            <span class="card-name">${v.name}</span>
+            <span class="card-meta">${v.driver}</span>
+            <span class="card-meta">${v.mountpoint}</span>
+            ${badge}
+        `;
+        list.appendChild(card);
+    }
+}
+
 // Images
 
 let allImages = [];
@@ -476,6 +503,18 @@ function renderImages() {
         list.appendChild(card);
     }
 }
+
+// ── Cheat sheet ───────────────────────────────────────────────────────────────
+
+document.querySelectorAll('.copy-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+        const code = btn.previousElementSibling.textContent;
+        navigator.clipboard.writeText(code).then(() => {
+            btn.textContent = 'Copied!';
+            setTimeout(() => { btn.textContent = 'Copy'; }, 2000);
+        });
+    });
+});
 
 // ── Server resources ──────────────────────────────────────────────────────────
 

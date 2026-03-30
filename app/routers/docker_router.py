@@ -2,7 +2,7 @@ import docker
 import docker.errors
 
 from app.models.docker import (ContainerResponse, ContainerActionRequest, ContainerLogsResponse,
-                               NetworkResponse, ImageResponse)
+                               NetworkResponse, ImageResponse, VolumeResponse)
 from fastapi import APIRouter, HTTPException
 
 client = docker.from_env()
@@ -101,6 +101,30 @@ async def get_networks():
         )
 
     return networks_result
+
+# Volumes
+
+@router.get("/volumes", response_model=list[VolumeResponse])
+async def get_volumes():
+    containers = client.containers.list(all=True)
+    used_volumes = set()
+    for container in containers:
+        for mount in container.attrs.get("Mounts", []):
+            if mount.get("Type") == "volume":
+                used_volumes.add(mount.get("Name"))
+
+    volumes_result = []
+    for volume in client.volumes.list():
+        volumes_result.append(
+            VolumeResponse(
+                name=volume.name,
+                driver=volume.attrs["Driver"],
+                mountpoint=volume.attrs["Mountpoint"],
+                in_use=volume.name in used_volumes,
+            )
+        )
+
+    return volumes_result
 
 # Images
 @router.get("/images", response_model=list[ImageResponse])
