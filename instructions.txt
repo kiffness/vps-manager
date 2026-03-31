@@ -1,0 +1,160 @@
+File Upload Feature — Build Instructions
+==========================================
+
+Overview
+--------
+Add drag-and-drop (plus click-to-browse) file upload to the file tree panel.
+Files are uploaded to whichever directory is currently open in the tree.
+
+The current directory is tracked in app.js as `currentPath` — you'll need to
+expose this. Looking at the code, the tree renders from a `path` variable passed
+through renderTree(). You'll need a module-level variable to track the current
+visible directory, separate from `currentFilePath` (which is the open file).
+
+
+------------------------------------------------------------------------
+STEP 1 — Add python-multipart to requirements.txt
+------------------------------------------------------------------------
+
+FastAPI needs this package to parse multipart/form-data (file uploads).
+Add this line to requirements.txt:
+
+    python-multipart==0.0.9
+
+Without this, FastAPI will throw a 422 error on any file upload request.
+
+
+------------------------------------------------------------------------
+STEP 2 — Add the upload endpoint to app/routers/files.py
+------------------------------------------------------------------------
+
+New imports to add at the top:
+
+    from fastapi import File, UploadFile
+    from typing import List
+
+New endpoint to add at the bottom of the file:
+
+    POST /api/files/upload
+
+It should accept:
+- `path: str` — the destination directory, as a Form field (not a query param,
+  because multipart requests mix form fields and files together)
+- `files: List[UploadFile]` — the files being uploaded
+
+Use `resolve_and_check(path)` to validate the destination directory exists and
+is within the base path — the same helper every other endpoint uses.
+
+For each file:
+1. Build the destination path: resolved_dir / file.filename
+2. Open the destination in binary write mode
+3. Use `shutil.copyfileobj(file.file, dest)` to stream the contents across
+   (don't read the whole file into memory with .read())
+
+Return a simple JSON response listing the filenames that were uploaded.
+
+The Form field import: `from fastapi import Form`
+
+
+------------------------------------------------------------------------
+STEP 3 — Track the current directory in app.js
+------------------------------------------------------------------------
+
+Right now the code tracks `currentFilePath` (the open file) but not the current
+visible directory. You need a new top-level variable:
+
+    let currentDirectory = '';
+
+Set it whenever the tree renders a directory. The best place is inside
+`renderTree()` — but that's recursive, so instead set it when the user clicks
+to expand a folder (in the tree item click handler), and also set it to '' on
+initial load.
+
+This variable is what you'll send as the `path` in the upload request.
+
+
+------------------------------------------------------------------------
+STEP 4 — Add the upload UI to index.html
+------------------------------------------------------------------------
+
+Inside `#file-tree-panel` in index.html, add two elements after the
+`<div id="file-tree">` div:
+
+1. A drop zone div:
+
+    <div id="upload-dropzone">Drop files to upload</div>
+
+2. A hidden file input (for click-to-browse):
+
+    <input type="file" id="upload-input" multiple style="display:none">
+
+The drop zone sits at the bottom of the sidebar. Clicking it triggers the
+hidden file input.
+
+
+------------------------------------------------------------------------
+STEP 5 — Add the upload logic to app.js
+------------------------------------------------------------------------
+
+Write a function `uploadFiles(fileList)` that:
+
+1. Takes a FileList or array of File objects
+2. Builds a FormData:
+     const form = new FormData();
+     form.append('path', currentDirectory);
+     for (const f of fileList) form.append('files', f);
+3. Calls apiFetch('/api/files/upload', { method: 'POST', body: form })
+   — do NOT set Content-Type manually, the browser sets the multipart
+   boundary automatically when you pass a FormData body
+4. On success: delete treeCache[currentDirectory] and call refreshTree()
+   so the newly uploaded files appear immediately
+5. On failure: show an error (use the existing showStatus() function)
+
+Then wire up two event listeners on the drop zone element:
+
+**Drag and drop:**
+- `dragover` — call e.preventDefault() and add a CSS class like
+  `dragover` to the drop zone to highlight it
+- `dragleave` — remove the `dragover` class
+- `drop` — call e.preventDefault(), remove the `dragover` class,
+  call uploadFiles(e.dataTransfer.files)
+
+**Click to browse:**
+- `click` on the drop zone — call document.getElementById('upload-input').click()
+- `change` on the upload input — call uploadFiles(e.target.files),
+  then reset the input value to '' so the same file can be re-uploaded
+
+
+------------------------------------------------------------------------
+STEP 6 — Style it in style.css
+------------------------------------------------------------------------
+
+Add styles for #upload-dropzone:
+
+- Sits at the bottom of the sidebar (flex-shrink: 0 so it doesn't get squeezed)
+- Border: 1px dashed, something subtle like #444
+- Small padding, centered text, muted colour
+- cursor: pointer
+- A small font-size (11px fits the sidebar)
+
+Add a .dragover modifier class that changes the border and text colour to
+something more prominent (e.g. your blue accent colour) to give feedback
+when a file is dragged over it.
+
+
+------------------------------------------------------------------------
+THINGS TO WATCH OUT FOR
+------------------------------------------------------------------------
+
+1. If no directory is open yet (currentDirectory is ''), uploads will go to
+   the root of base_dir. That's fine, but you might want to show a message
+   like "Drop files to upload to current folder" so the user knows.
+
+2. The file input `multiple` attribute allows selecting several files at once —
+   the endpoint already accepts a list so this works for free.
+
+3. Large files: shutil.copyfileobj streams in chunks so memory isn't an issue
+   on the backend. The browser will handle the upload progress natively.
+
+4. Filename collisions: the endpoint as described will silently overwrite.
+   That's acceptable for a personal tool — no need to handle it specially.

@@ -84,6 +84,7 @@ vps-manager/
 2. Create a `.env` file:
    ```bash
    API_KEY=your-secret-key-here
+   BASE_DIR=/home/your-user     # optional, defaults to /home/runner
    ```
 
 3. Start the container:
@@ -99,7 +100,7 @@ The app mounts two things from the host:
 
 ```yaml
 volumes:
-  - /home/runner:/home/runner        # filesystem access
+  - /home/your-user:/home/your-user  # match your BASE_DIR
   - /var/run/docker.sock:/var/run/docker.sock  # Docker API access
 ```
 
