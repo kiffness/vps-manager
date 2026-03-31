@@ -110,86 +110,162 @@
     </div>
 
     <div id="tab-cheatsheet" class="tab-section cheatsheet" style="display:none">
+        <div class="cs-grid">
 
         <div class="cs-section">
             <h2>Docker — Common Commands</h2>
             <div class="cs-group">
-                <div class="cs-label">List running containers</div>
-                <div class="cs-code"><code>docker ps</code><button class="copy-btn">Copy</button></div>
-                <div class="cs-label">List all containers (including stopped)</div>
-                <div class="cs-code"><code>docker ps -a</code><button class="copy-btn">Copy</button></div>
-                <div class="cs-label">View container logs (last 50 lines)</div>
-                <div class="cs-code"><code>docker logs &lt;container&gt; --tail 50</code><button class="copy-btn">Copy</button></div>
-                <div class="cs-label">Follow container logs</div>
-                <div class="cs-code"><code>docker logs -f &lt;container&gt;</code><button class="copy-btn">Copy</button></div>
-                <div class="cs-label">Start / stop / restart container</div>
-                <div class="cs-code"><code>docker start|stop|restart &lt;container&gt;</code><button class="copy-btn">Copy</button></div>
-                <div class="cs-label">Shell into a running container</div>
-                <div class="cs-code"><code>docker exec -it &lt;container&gt; /bin/sh</code><button class="copy-btn">Copy</button></div>
-                <div class="cs-label">Remove stopped containers</div>
-                <div class="cs-code"><code>docker container prune</code><button class="copy-btn">Copy</button></div>
-                <div class="cs-label">Remove unused images</div>
-                <div class="cs-code"><code>docker image prune -a</code><button class="copy-btn">Copy</button></div>
-                <div class="cs-label">Inspect container</div>
-                <div class="cs-code"><code>docker inspect &lt;container&gt;</code><button class="copy-btn">Copy</button></div>
-                <div class="cs-label">Show containers on a network</div>
-                <div class="cs-code"><code>docker network inspect &lt;network&gt; --format '{{range .Containers}}{{.Name}} {{end}}'</code><button class="copy-btn">Copy</button></div>
-                <div class="cs-label">Connect container to network</div>
-                <div class="cs-code"><code>docker network connect &lt;network&gt; &lt;container&gt;</code><button class="copy-btn">Copy</button></div>
+                <div class="cs-entry">
+                    <div class="cs-label">List running containers</div>
+                    <div class="cs-code"><code>docker ps</code><button class="copy-btn">Copy</button></div>
+                </div>
+                <div class="cs-entry">
+                    <div class="cs-label">List all containers (including stopped)</div>
+                    <div class="cs-code"><code>docker ps -a</code><button class="copy-btn">Copy</button></div>
+                </div>
+                <div class="cs-entry">
+                    <div class="cs-label">View container logs (last 50 lines)</div>
+                    <div class="cs-code"><code>docker logs &lt;container&gt; --tail 50</code><button class="copy-btn">Copy</button></div>
+                </div>
+                <div class="cs-entry">
+                    <div class="cs-label">Follow container logs</div>
+                    <div class="cs-code"><code>docker logs -f &lt;container&gt;</code><button class="copy-btn">Copy</button></div>
+                </div>
+                <div class="cs-entry">
+                    <div class="cs-label">Start / stop / restart container</div>
+                    <div class="cs-code"><code>docker start|stop|restart &lt;container&gt;</code><button class="copy-btn">Copy</button></div>
+                </div>
+                <div class="cs-entry">
+                    <div class="cs-label">Shell into a running container</div>
+                    <div class="cs-code"><code>docker exec -it &lt;container&gt; /bin/sh</code><button class="copy-btn">Copy</button></div>
+                </div>
+                <div class="cs-entry">
+                    <div class="cs-label">Remove stopped containers</div>
+                    <div class="cs-code"><code>docker container prune</code><button class="copy-btn">Copy</button></div>
+                </div>
+                <div class="cs-entry">
+                    <div class="cs-label">Remove unused images</div>
+                    <div class="cs-code"><code>docker image prune -a</code><button class="copy-btn">Copy</button></div>
+                </div>
+                <div class="cs-entry">
+                    <div class="cs-label">Inspect container</div>
+                    <div class="cs-code"><code>docker inspect &lt;container&gt;</code><button class="copy-btn">Copy</button></div>
+                </div>
+                <div class="cs-entry">
+                    <div class="cs-label">Show containers on a network</div>
+                    <div class="cs-code"><code>docker network inspect &lt;network&gt; --format '{{range .Containers}}{{.Name}} {{end}}'</code><button class="copy-btn">Copy</button></div>
+                </div>
+                <div class="cs-entry">
+                    <div class="cs-label">Connect container to network</div>
+                    <div class="cs-code"><code>docker network connect &lt;network&gt; &lt;container&gt;</code><button class="copy-btn">Copy</button></div>
+                </div>
             </div>
         </div>
 
         <div class="cs-section">
             <h2>Docker Compose — Common Commands</h2>
             <div class="cs-group">
-                <div class="cs-label">Start services (detached)</div>
-                <div class="cs-code"><code>docker compose up -d</code><button class="copy-btn">Copy</button></div>
-                <div class="cs-label">Start and rebuild images</div>
-                <div class="cs-code"><code>docker compose up -d --build</code><button class="copy-btn">Copy</button></div>
-                <div class="cs-label">Stop services</div>
-                <div class="cs-code"><code>docker compose down</code><button class="copy-btn">Copy</button></div>
-                <div class="cs-label">Stop and remove volumes</div>
-                <div class="cs-code"><code>docker compose down -v</code><button class="copy-btn">Copy</button></div>
-                <div class="cs-label">View logs for all services</div>
-                <div class="cs-code"><code>docker compose logs -f</code><button class="copy-btn">Copy</button></div>
-                <div class="cs-label">Pull latest images</div>
-                <div class="cs-code"><code>docker compose pull</code><button class="copy-btn">Copy</button></div>
+                <div class="cs-entry">
+                    <div class="cs-label">Start services (detached)</div>
+                    <div class="cs-code"><code>docker compose up -d</code><button class="copy-btn">Copy</button></div>
+                </div>
+                <div class="cs-entry">
+                    <div class="cs-label">Start and rebuild images</div>
+                    <div class="cs-code"><code>docker compose up -d --build</code><button class="copy-btn">Copy</button></div>
+                </div>
+                <div class="cs-entry">
+                    <div class="cs-label">Stop services</div>
+                    <div class="cs-code"><code>docker compose down</code><button class="copy-btn">Copy</button></div>
+                </div>
+                <div class="cs-entry">
+                    <div class="cs-label">Stop and remove volumes</div>
+                    <div class="cs-code"><code>docker compose down -v</code><button class="copy-btn">Copy</button></div>
+                </div>
+                <div class="cs-entry">
+                    <div class="cs-label">View logs for all services</div>
+                    <div class="cs-code"><code>docker compose logs -f</code><button class="copy-btn">Copy</button></div>
+                </div>
+                <div class="cs-entry">
+                    <div class="cs-label">Pull latest images</div>
+                    <div class="cs-code"><code>docker compose pull</code><button class="copy-btn">Copy</button></div>
+                </div>
             </div>
         </div>
 
         <div class="cs-section">
             <h2>Linux — Common Commands</h2>
             <div class="cs-group">
-                <div class="cs-label">Disk usage (human readable)</div>
-                <div class="cs-code"><code>df -h</code><button class="copy-btn">Copy</button></div>
-                <div class="cs-label">Directory size</div>
-                <div class="cs-code"><code>du -sh &lt;dir&gt;</code><button class="copy-btn">Copy</button></div>
-                <div class="cs-label">Memory usage</div>
-                <div class="cs-code"><code>free -h</code><button class="copy-btn">Copy</button></div>
-                <div class="cs-label">Running processes (top 10 by CPU)</div>
-                <div class="cs-code"><code>ps aux --sort=-%cpu | head -10</code><button class="copy-btn">Copy</button></div>
-                <div class="cs-label">Check open ports</div>
-                <div class="cs-code"><code>ss -tlnp</code><button class="copy-btn">Copy</button></div>
-                <div class="cs-label">Tail a log file</div>
-                <div class="cs-code"><code>tail -f /var/log/syslog</code><button class="copy-btn">Copy</button></div>
-                <div class="cs-label">Search running processes</div>
-                <div class="cs-code"><code>ps aux | grep &lt;name&gt;</code><button class="copy-btn">Copy</button></div>
-                <div class="cs-label">Check systemd service status</div>
-                <div class="cs-code"><code>systemctl status &lt;service&gt;</code><button class="copy-btn">Copy</button></div>
-                <div class="cs-label">Reload systemd after editing unit files</div>
-                <div class="cs-code"><code>systemctl daemon-reload</code><button class="copy-btn">Copy</button></div>
+                <div class="cs-entry">
+                    <div class="cs-label">Disk usage (human readable)</div>
+                    <div class="cs-code"><code>df -h</code><button class="copy-btn">Copy</button></div>
+                </div>
+                <div class="cs-entry">
+                    <div class="cs-label">Directory size</div>
+                    <div class="cs-code"><code>du -sh &lt;dir&gt;</code><button class="copy-btn">Copy</button></div>
+                </div>
+                <div class="cs-entry">
+                    <div class="cs-label">Memory usage</div>
+                    <div class="cs-code"><code>free -h</code><button class="copy-btn">Copy</button></div>
+                </div>
+                <div class="cs-entry">
+                    <div class="cs-label">Running processes (top 10 by CPU)</div>
+                    <div class="cs-code"><code>ps aux --sort=-%cpu | head -10</code><button class="copy-btn">Copy</button></div>
+                </div>
+                <div class="cs-entry">
+                    <div class="cs-label">Check open ports</div>
+                    <div class="cs-code"><code>ss -tlnp</code><button class="copy-btn">Copy</button></div>
+                </div>
+                <div class="cs-entry">
+                    <div class="cs-label">Tail a log file</div>
+                    <div class="cs-code"><code>tail -f /var/log/syslog</code><button class="copy-btn">Copy</button></div>
+                </div>
+                <div class="cs-entry">
+                    <div class="cs-label">Search running processes</div>
+                    <div class="cs-code"><code>ps aux | grep &lt;name&gt;</code><button class="copy-btn">Copy</button></div>
+                </div>
+                <div class="cs-entry">
+                    <div class="cs-label">Check systemd service status</div>
+                    <div class="cs-code"><code>systemctl status &lt;service&gt;</code><button class="copy-btn">Copy</button></div>
+                </div>
+                <div class="cs-entry">
+                    <div class="cs-label">Reload systemd after editing unit files</div>
+                    <div class="cs-code"><code>systemctl daemon-reload</code><button class="copy-btn">Copy</button></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cs-section">
+            <h2>Caddy</h2>
+            <div class="cs-group">
+                <div class="cs-entry">
+                    <div class="cs-label">Reload config</div>
+                    <div class="cs-code"><code>docker exec caddy-caddy-1 caddy reload --config /etc/caddy/Caddyfile</code><button class="copy-btn">Copy</button></div>
+                </div>
+                <div class="cs-entry">
+                    <div class="cs-label">Validate config</div>
+                    <div class="cs-code"><code>docker exec caddy-caddy-1 caddy validate --config /etc/caddy/Caddyfile</code><button class="copy-btn">Copy</button></div>
+                </div>
+                <div class="cs-entry">
+                    <div class="cs-label">View Caddy logs</div>
+                    <div class="cs-code"><code>docker logs caddy-caddy-1 --tail 50</code><button class="copy-btn">Copy</button></div>
+                </div>
             </div>
         </div>
 
         <div class="cs-section">
             <h2>Deploying a New Project</h2>
             <div class="cs-group">
-                <div class="cs-label">1. Create project directory</div>
-                <div class="cs-code"><code>mkdir -p /home/runner/&lt;project&gt; && cd /home/runner/&lt;project&gt;</code><button class="copy-btn">Copy</button></div>
-                <div class="cs-label">2. Create .env file</div>
-                <div class="cs-code"><code>nano .env</code><button class="copy-btn">Copy</button></div>
-                <div class="cs-label">3. Create docker-compose.yml — attach services to proxy network</div>
-                <div class="cs-code"><code>services:
+                <div class="cs-entry">
+                    <div class="cs-label">1. Create project directory</div>
+                    <div class="cs-code"><code>mkdir -p /home/runner/&lt;project&gt; && cd /home/runner/&lt;project&gt;</code><button class="copy-btn">Copy</button></div>
+                </div>
+                <div class="cs-entry">
+                    <div class="cs-label">2. Create .env file</div>
+                    <div class="cs-code"><code>nano .env</code><button class="copy-btn">Copy</button></div>
+                </div>
+                <div class="cs-entry">
+                    <div class="cs-label">3. Create docker-compose.yml — attach services to proxy network</div>
+                    <div class="cs-code"><code>services:
   app:
     image: ghcr.io/&lt;owner&gt;/&lt;image&gt;:${APP_VERSION}
     restart: unless-stopped
@@ -203,47 +279,53 @@ networks:
   default: {}
   proxy:
     external: true</code><button class="copy-btn">Copy</button></div>
-                <div class="cs-label">4. Add to Caddyfile</div>
-                <div class="cs-code"><code>&lt;subdomain&gt;.thekiffy.co.uk {
+                </div>
+                <div class="cs-entry">
+                    <div class="cs-label">4. Add to Caddyfile</div>
+                    <div class="cs-code"><code>&lt;subdomain&gt;.thekiffy.co.uk {
   reverse_proxy &lt;service-name&gt;:80
 }</code><button class="copy-btn">Copy</button></div>
-                <div class="cs-label">5. Deploy</div>
-                <div class="cs-code"><code>docker compose up -d</code><button class="copy-btn">Copy</button></div>
-                <div class="cs-label">6. Reload Caddy</div>
-                <div class="cs-code"><code>docker exec caddy-caddy-1 caddy reload --config /etc/caddy/Caddyfile</code><button class="copy-btn">Copy</button></div>
+                </div>
+                <div class="cs-entry">
+                    <div class="cs-label">5. Deploy</div>
+                    <div class="cs-code"><code>docker compose up -d</code><button class="copy-btn">Copy</button></div>
+                </div>
+                <div class="cs-entry">
+                    <div class="cs-label">6. Reload Caddy</div>
+                    <div class="cs-code"><code>docker exec caddy-caddy-1 caddy reload --config /etc/caddy/Caddyfile</code><button class="copy-btn">Copy</button></div>
+                </div>
             </div>
         </div>
 
         <div class="cs-section">
             <h2>Setting Up a GitHub Actions Runner</h2>
             <div class="cs-group">
-                <div class="cs-label">1. Create runner directory</div>
-                <div class="cs-code"><code>mkdir -p /home/runner/actions-runner-&lt;project&gt; && cd /home/runner/actions-runner-&lt;project&gt;</code><button class="copy-btn">Copy</button></div>
-                <div class="cs-label">2. Download runner (check GitHub for latest version)</div>
-                <div class="cs-code"><code>curl -o runner.tar.gz -L https://github.com/actions/runner/releases/download/v2.322.0/actions-runner-linux-x64-2.322.0.tar.gz
+                <div class="cs-entry">
+                    <div class="cs-label">1. Create runner directory</div>
+                    <div class="cs-code"><code>mkdir -p /home/runner/actions-runner-&lt;project&gt; && cd /home/runner/actions-runner-&lt;project&gt;</code><button class="copy-btn">Copy</button></div>
+                </div>
+                <div class="cs-entry">
+                    <div class="cs-label">2. Download runner (check GitHub for latest version)</div>
+                    <div class="cs-code"><code>curl -o runner.tar.gz -L https://github.com/actions/runner/releases/download/v2.322.0/actions-runner-linux-x64-2.322.0.tar.gz
 tar xzf runner.tar.gz</code><button class="copy-btn">Copy</button></div>
-                <div class="cs-label">3. Register with your repo (get token from repo → Settings → Actions → Runners)</div>
-                <div class="cs-code"><code>./config.sh --url https://github.com/&lt;owner&gt;/&lt;repo&gt; --token &lt;token&gt;</code><button class="copy-btn">Copy</button></div>
-                <div class="cs-label">4. Install and start as a service</div>
-                <div class="cs-code"><code>sudo ./svc.sh install
+                </div>
+                <div class="cs-entry">
+                    <div class="cs-label">3. Register with your repo (get token from repo → Settings → Actions → Runners)</div>
+                    <div class="cs-code"><code>./config.sh --url https://github.com/&lt;owner&gt;/&lt;repo&gt; --token &lt;token&gt;</code><button class="copy-btn">Copy</button></div>
+                </div>
+                <div class="cs-entry">
+                    <div class="cs-label">4. Install and start as a service</div>
+                    <div class="cs-code"><code>sudo ./svc.sh install
 sudo ./svc.sh start</code><button class="copy-btn">Copy</button></div>
-                <div class="cs-label">5. Check status</div>
-                <div class="cs-code"><code>sudo ./svc.sh status</code><button class="copy-btn">Copy</button></div>
+                </div>
+                <div class="cs-entry">
+                    <div class="cs-label">5. Check status</div>
+                    <div class="cs-code"><code>sudo ./svc.sh status</code><button class="copy-btn">Copy</button></div>
+                </div>
             </div>
         </div>
 
-        <div class="cs-section">
-            <h2>Caddy</h2>
-            <div class="cs-group">
-                <div class="cs-label">Reload config</div>
-                <div class="cs-code"><code>docker exec caddy-caddy-1 caddy reload --config /etc/caddy/Caddyfile</code><button class="copy-btn">Copy</button></div>
-                <div class="cs-label">Validate config</div>
-                <div class="cs-code"><code>docker exec caddy-caddy-1 caddy validate --config /etc/caddy/Caddyfile</code><button class="copy-btn">Copy</button></div>
-                <div class="cs-label">View Caddy logs</div>
-                <div class="cs-code"><code>docker logs caddy-caddy-1 --tail 50</code><button class="copy-btn">Copy</button></div>
-            </div>
         </div>
-
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/loader.js"></script>

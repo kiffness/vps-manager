@@ -474,42 +474,69 @@ body {
 
 .cheatsheet {
     overflow-y: auto;
-    padding: 16px;
-    flex-direction: column;
+    padding: 20px;
+}
+
+.cs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(360px, 1fr));
+    gap: 16px;
+    align-items: start;
 }
 
 .cs-section {
-    margin-bottom: 32px;
+    background: #252526;
+    border: 1px solid #3a3a3a;
+    border-radius: 6px;
+    overflow: hidden;
 }
 
 .cs-section h2 {
     font-size: 11px;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: #555;
-    margin-bottom: 12px;
+    letter-spacing: 0.09em;
+    color: #9cdcfe;
+    background: #1e1e1e;
+    border-bottom: 1px solid #3a3a3a;
+    margin: 0;
+    padding: 10px 14px;
 }
 
 .cs-group {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    padding: 10px 14px;
+    gap: 0;
+}
+
+.cs-entry {
+    border-bottom: 1px solid #2d2d2d;
+    padding: 8px 0;
+}
+
+.cs-entry:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.cs-entry:first-child {
+    padding-top: 0;
 }
 
 .cs-label {
     font-size: 11px;
     color: #888;
-    margin-top: 8px;
+    margin-bottom: 5px;
 }
 
 .cs-code {
     display: flex;
     align-items: flex-start;
     gap: 8px;
-    background: #1e1e1e;
-    border: 1px solid #3a3a3a;
-    border-radius: 3px;
-    padding: 8px 10px;
+    background: #1a1a1a;
+    border: 1px solid #333;
+    border-radius: 4px;
+    padding: 7px 10px;
 }
 
 .cs-code code {
@@ -524,13 +551,14 @@ body {
 .copy-btn {
     background: none;
     border: 1px solid #3a3a3a;
-    color: #888;
+    color: #666;
     padding: 2px 8px;
     border-radius: 3px;
     cursor: pointer;
-    font-size: 11px;
+    font-size: 10px;
     font-family: inherit;
     flex-shrink: 0;
+    transition: color 0.1s, border-color 0.1s;
 }
 
 .copy-btn:hover {
