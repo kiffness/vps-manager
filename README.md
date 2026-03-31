@@ -15,6 +15,7 @@ A self-hosted web UI for managing a Linux VPS — built with FastAPI and vanilla
 - Browse the server filesystem via a VS Code-style file tree
 - View and edit files in-browser using Monaco Editor (the editor that powers VS Code)
 - Save changes directly to the server
+- Upload files via drag-and-drop or file picker
 
 **Docker**
 - View all containers with live status, start/stop/restart controls and log viewer
