@@ -86,7 +86,7 @@ async def delete(path: str = ""):
 
     return {"message": "Deleted"}
 
-@router.post("/files/upload", response_model=List[FileUploadResponse])
+@router.post("/upload", response_model=List[FileUploadResponse])
 async def upload_files(path: str = Form(...), files: List[UploadFile] =File(...)):
     resolved = resolve_and_check(path)
 
