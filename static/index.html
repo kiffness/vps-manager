@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>VPS Manager</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@vscode/codicons@0.0.36/dist/codicon.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.css">
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
@@ -23,6 +24,7 @@
         <button class="tab-btn" data-tab="docker">Docker</button>
         <button class="tab-btn" data-tab="server">Server</button>
         <button class="tab-btn" data-tab="cheatsheet">Cheat Sheet</button>
+        <button class="tab-btn" data-tab="terminal">Terminal</button>
         <div style="flex:1"></div>
         <button id="lock-btn" title="Lock">&#x1F512;</button>
     </div>
@@ -328,7 +330,13 @@ sudo ./svc.sh start</code><button class="copy-btn">Copy</button></div>
         </div>
     </div>
 
+    <div id="tab-terminal" class="tab-section" style="display:none">
+        <div id="terminal-container"></div>
+    </div>
+
     <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.52.2/min/vs/loader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit@0.8.0/lib/xterm-addon-fit.js"></script>
     <script src="/static/app.js"></script>
 
 </body>

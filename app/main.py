@@ -9,6 +9,7 @@ from app.config import settings
 from app.routers.files import router as files_router
 from app.routers.docker_router import router as docker_router
 from app.routers.server_resources import router as server_resources_router
+from app.routers.terminal import router as terminal_router
 from app.dependancy.api_key_dependency import verify_api_key
 
 logging.basicConfig(
@@ -28,13 +29,14 @@ app = FastAPI(
     description=(
         "A lightweight python api that sits over my vps so I can run commands and browse the files"
     ),
-    version="1.0.0",
+    version="1.1.0",
     lifespan=lifespan,
 )
 
 app.include_router(files_router, dependencies=[Depends(verify_api_key)])
 app.include_router(docker_router, dependencies=[Depends(verify_api_key)])
 app.include_router(server_resources_router)
+app.include_router(terminal_router)
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 

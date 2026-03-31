@@ -3,6 +3,8 @@ let monacoEditor = null;
 const expandedPaths = new Set();
 const treeCache = {};
 
+let terminalInitialised = false;
+
 // ── API key ───────────────────────────────────────────────────────────────────
 
 function getApiKey() {
@@ -66,6 +68,7 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
         if (tab === 'docker') loadDockerDashboard();
         if (tab === 'server') startResourceStream();
         else stopResourceStream();
+        if (tab === 'terminal') initTerminal();
     });
 });
 
@@ -549,4 +552,64 @@ if (getApiKey()) {
     refreshTree();
 } else {
     showLockScreen();
+}
+
+// ── Terminal ──────────────────────────────────────────────────────────────────
+
+function initTerminal() {
+    if (terminalInitialised) return;
+    terminalInitialised = true;
+
+    const term = new Terminal({
+        cursorBlink: true,
+        fontSize: 14,
+        fontFamily: '"Cascadia Code", "Fira Code", monospace',
+        theme: {
+            background: '#0e1117',
+            foreground: '#c9d1d9',
+            cursor: '#58a6ff',
+            selectionBackground: '#264f78',
+            black: '#0e1117',
+            red: '#ff7b72',
+            green: '#3fb950',
+            yellow: '#d29922',
+            blue: '#58a6ff',
+            magenta: '#bc8cff',
+            cyan: '#39c5cf',
+            white: '#c9d1d9',
+            brightBlack: '#484f58',
+            brightRed: '#ffa198',
+            brightGreen: '#56d364',
+            brightYellow: '#e3b341',
+            brightBlue: '#79c0ff',
+            brightMagenta: '#d2a8ff',
+            brightCyan: '#56d4dd',
+            brightWhite: '#f0f6fc',
+        },
+    });
+
+    const fitAddon = new FitAddon.FitAddon();
+    term.loadAddon(fitAddon);
+    term.open(document.getElementById('terminal-container'));
+    fitAddon.fit();
+
+    const wsProtocol = location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const socket = new WebSocket(`${wsProtocol}//${location.host}/api/terminal/ws?api_key=${getApiKey()}`);
+    socket.binaryType = 'arraybuffer';
+
+    socket.onopen = () => term.focus();
+
+    socket.onmessage = (e) => {
+        term.write(new Uint8Array(e.data));
+    };
+
+    socket.onclose = () => {
+        term.writeln('\r\n\x1b[31mConnection closed.\x1b[0m');
+    };
+
+    term.onData((data) => {
+        if (socket.readyState === WebSocket.OPEN) socket.send(data);
+    });
+
+    window.addEventListener('resize', () => fitAddon.fit());
 }
