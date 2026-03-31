@@ -1,9 +1,10 @@
 import shutil
 
-from fastapi import APIRouter, HTTPException, status
+from fastapi import APIRouter, HTTPException, status, File, UploadFile, Form
 from pathlib import Path
+from typing import List
 
-from app.models.files import ListDirectoryResponse, FileContentResponse, WriteFileRequest
+from app.models.files import ListDirectoryResponse, FileContentResponse, WriteFileRequest, FileUploadResponse
 from app.config import settings
 
 base = Path(settings.base_dir).resolve()
@@ -84,3 +85,22 @@ async def delete(path: str = ""):
         resolved.unlink()
 
     return {"message": "Deleted"}
+
+@router.post("/files/upload", response_model=List[FileUploadResponse])
+async def upload_files(path: str = Form(...), files: List[UploadFile] =File(...)):
+    resolved = resolve_and_check(path)
+
+    response = []
+
+    for file in files:
+        dest_path = resolved / file.filename
+
+        with open(dest_path, 'wb') as dest:
+            shutil.copyfileobj(file.file, dest)
+
+        response.append(FileUploadResponse(
+            filename=file.filename,
+            path=dest_path
+        ))
+    
+    return response

@@ -169,6 +169,31 @@ body {
     overflow-x: hidden;
 }
 
+/* ── Upload dropzone ─────────────────────────────────────────────────────── */
+
+#upload-dropzone {
+    flex-shrink: 0;
+    margin: 8px;
+    padding: 8px;
+    border: 1px dashed #444;
+    border-radius: 4px;
+    color: #666;
+    font-size: 11px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s;
+}
+
+#upload-dropzone:hover {
+    border-color: #666;
+    color: #999;
+}
+
+#upload-dropzone.dragover {
+    border-color: #58a6ff;
+    color: #58a6ff;
+}
+
 /* ── Tree items ───────────────────────────────────────────────────────────── */
 
 .tree-item {

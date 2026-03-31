@@ -12,3 +12,7 @@ class FileContentResponse(BaseModel):
 class WriteFileRequest(BaseModel):
     path: str
     content: str
+
+class FileUploadResponse(BaseModel):
+    filename: str
+    path: str
