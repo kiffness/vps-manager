@@ -25,7 +25,7 @@ async def stream_terminal(websocket: WebSocket, api_key: str = Query(...)):
     master_fd, slave_fd = pty.openpty()
 
     process = subprocess.Popen(
-        ["/bin/bash"],
+        ["/usr/bin/bash"],
         stdin=slave_fd,
         stdout=slave_fd,
         stderr=slave_fd,
