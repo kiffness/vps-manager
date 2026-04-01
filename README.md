@@ -24,7 +24,8 @@ A self-hosted web UI for managing a Linux VPS — built with FastAPI and vanilla
 
 **Terminal**
 - Full interactive terminal in the browser via xterm.js and WebSockets
-- Connects to a real bash shell on the server over a PTY
+- SSHes into the host over an ed25519 key — gives a real shell on the server, not just inside the container
+- Supports copy (select to copy) and paste (Ctrl+V or right-click)
 
 **Server Resources**
 - Live CPU, memory, and disk usage streamed via SSE
@@ -38,7 +39,7 @@ A self-hosted web UI for managing a Linux VPS — built with FastAPI and vanilla
 |---|---|
 | Backend | Python, FastAPI |
 | Docker control | docker-py (Docker SDK) |
-| Terminal | WebSockets + PTY (Python `pty` module) |
+| Terminal | WebSockets + SSH (asyncssh) |
 | Streaming | Server-Sent Events (SSE) |
 | Frontend | Vanilla HTML/CSS/JS |
 | File editor | Monaco Editor (CDN) |
@@ -52,12 +53,12 @@ A self-hosted web UI for managing a Linux VPS — built with FastAPI and vanilla
 vps-manager/
 ├── app/
 │   ├── main.py                  # FastAPI app, router registration, static files
-│   ├── config.py                # Settings (API key, base dir, log level)
+│   ├── config.py                # Settings (API key, base dir, SSH config, log level)
 │   ├── routers/
 │   │   ├── files.py             # File browse, read, write, delete
 │   │   ├── docker_router.py     # Containers, networks, images, logs, exec
 │   │   ├── server_resources.py  # CPU, memory, disk via SSE
-│   │   └── terminal.py          # WebSocket terminal (PTY + bash)
+│   │   └── terminal.py          # WebSocket terminal (SSH via asyncssh)
 │   └── dependency/
 │       └── api_key_dependency.py
 ├── static/
@@ -73,6 +74,7 @@ vps-manager/
 ### Prerequisites
 
 - Docker and Docker Compose on your VPS
+- An SSH server running on the host (`sshd`)
 
 ### Setup
 
@@ -82,31 +84,43 @@ vps-manager/
    cd vps-manager
    ```
 
-2. Create a `.env` file:
+2. Generate an SSH key pair for the terminal to use:
+   ```bash
+   ssh-keygen -t ed25519 -f ./ssh_key -N "" -C "vps-manager"
+   cat ssh_key.pub >> ~/.ssh/authorized_keys
+   ```
+
+3. Create a `.env` file:
    ```bash
    API_KEY=your-secret-key-here
    BASE_DIR=/home/your-user     # optional, defaults to /home/runner
+   SSH_USER=root                # user to SSH in as
    ```
 
-3. Start the container:
+4. Start the container:
    ```bash
    docker compose up -d
    ```
 
-4. Open `http://<your-server-ip>:8080` in your browser and enter your API key.
+5. Open `http://<your-server-ip>:8080` in your browser and enter your API key.
 
 ### docker-compose.yml
 
-The app mounts two things from the host:
+The app mounts three things from the host:
 
 ```yaml
 volumes:
   - /home/your-user:/home/your-user  # match your BASE_DIR
   - /var/run/docker.sock:/var/run/docker.sock  # Docker API access
+  - ./ssh_key:/run/secrets/ssh_key:ro  # SSH private key for terminal
+extra_hosts:
+  - "host.docker.internal:host-gateway"  # lets the container reach the host via SSH
 ```
 
 ## Security
 
 Access is protected by an API key sent as an `X-API-Key` header (or query parameter for WebSocket/SSE connections). The key is stored in `localStorage` in the browser after first entry.
+
+The browser terminal SSHes into the host using a dedicated ed25519 key — it does not use password authentication. Keep `ssh_key` out of version control (it is gitignored by default).
 
 This is designed for personal use over a trusted network or behind a reverse proxy with HTTPS. Do not expose it directly to the public internet without TLS.
