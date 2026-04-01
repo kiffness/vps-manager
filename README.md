@@ -17,21 +17,31 @@ A self-hosted web UI for managing a Linux VPS — built with FastAPI and vanilla
 - Save changes directly to the server
 - Upload files via drag-and-drop or file picker
 
+![Files](assets/Files%20Showcase.gif)
+
 **Docker**
 - View all containers with live status, start/stop/restart controls and log viewer
 - Browse networks, volumes, and images
 - Filter images by usage and bulk-delete unused ones
+
+![Docker](assets/Docker%20Showcase.gif)
 
 **Terminal**
 - Full interactive terminal in the browser via xterm.js and WebSockets
 - SSHes into the host over an ed25519 key — gives a real shell on the server, not just inside the container
 - Supports copy (select to copy) and paste (Ctrl+V or right-click)
 
+![Terminal](assets/Terminal%20Showcase.gif)
+
 **Server Resources**
 - Live CPU, memory, and disk usage streamed via SSE
 
+![Server](assets/Server%20Section.gif)
+
 **Cheat Sheet**
 - Quick reference for common Docker, Linux, and Caddy commands
+
+![Cheat Sheet](assets/Cheat%20Sheet.gif)
 
 ## Stack
 
