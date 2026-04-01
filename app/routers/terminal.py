@@ -28,6 +28,7 @@ async def ws_to_pty(websocket: WebSocket, process: asyncssh.SSHClientProcess):
         while True:
             text = await websocket.receive_text()
             process.stdin.write(text)
+            await process.stdin.drain()
     except WebSocketDisconnect:
         pass
 
