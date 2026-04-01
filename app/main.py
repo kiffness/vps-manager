@@ -29,7 +29,7 @@ app = FastAPI(
     description=(
         "A lightweight python api that sits over my vps so I can run commands and browse the files"
     ),
-    version="1.1.0",
+    version="1.2.0",
     lifespan=lifespan,
 )
 
@@ -43,6 +43,10 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 @app.get("/")
 async def serve_index():
     return FileResponse("static/index.html")
+
+@app.get("/favicon.ico", include_in_schema=False)
+async def favicon():
+    return FileResponse("static/favicon.svg", media_type="image/svg+xml")
 
 @app.get("/health", tags=["Meta"])
 async def health_check():
