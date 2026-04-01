@@ -706,12 +706,10 @@ function initTerminal() {
   const socket = new WebSocket(
     `${wsProtocol}//${location.host}/api/terminal/ws?api_key=${getApiKey()}`,
   );
-  socket.binaryType = "arraybuffer";
-
   socket.onopen = () => term.focus();
 
   socket.onmessage = (e) => {
-    term.write(new Uint8Array(e.data));
+    term.write(e.data);
   };
 
   socket.onclose = () => {

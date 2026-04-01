@@ -11,4 +11,10 @@ class Settings(BaseSettings):
 
     api_key: str
 
+    # SSH connection to the host VPS
+    ssh_host: str = "host.docker.internal"
+    ssh_port: int = 22
+    ssh_user: str = "root"
+    ssh_key_path: str = "/run/secrets/ssh_key"
+
 settings = Settings()
