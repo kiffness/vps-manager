@@ -37,9 +37,7 @@ async def stream_terminal(websocket: WebSocket, api_key: str = Query(...)):
 
     try:
         while True:
-            pty_task = asyncio.create_task(
-                loop.run_in_executor(None, os.read, master_fd, 1024)
-            )
+            pty_task = loop.run_in_executor(None, os.read, master_fd, 1024)
             ws_task = asyncio.create_task(websocket.receive_text())
 
             done, pending = await asyncio.wait(
