@@ -5,3 +5,4 @@ __pycache__/
 .idea
 ideas.txt
 ideas.md
+docker-compose.override.yml

@@ -671,6 +671,7 @@ function initTerminal() {
 
   const term = new Terminal({
     cursorBlink: true,
+    copyOnSelection: true,
     fontSize: 14,
     fontFamily: '"Cascadia Code", "Fira Code", monospace',
     theme: {
@@ -706,10 +707,12 @@ function initTerminal() {
   const socket = new WebSocket(
     `${wsProtocol}//${location.host}/api/terminal/ws?api_key=${getApiKey()}`,
   );
+  socket.binaryType = "arraybuffer";
+
   socket.onopen = () => term.focus();
 
   socket.onmessage = (e) => {
-    term.write(e.data);
+    term.write(new Uint8Array(e.data));
   };
 
   socket.onclose = () => {
@@ -719,6 +722,29 @@ function initTerminal() {
   term.onData((data) => {
     if (socket.readyState === WebSocket.OPEN) socket.send(data);
   });
+
+  // Intercept paste in capture phase so we handle it before xterm's textarea does.
+  // Prevents the double-paste that occurs when both our handler and xterm fire.
+  let ctrlVPending = false;
+
+  term.attachCustomKeyEventHandler((e) => {
+    if (e.ctrlKey && !e.shiftKey && e.key === "v" && e.type === "keydown") {
+      ctrlVPending = true;
+      navigator.clipboard.readText().then((text) => term.paste(text));
+      return false;
+    }
+    return true;
+  });
+
+  // Cancel the browser paste event that fires after Ctrl+V so xterm doesn't
+  // also handle it — right-click paste is unaffected since ctrlVPending is false.
+  document.addEventListener("paste", (e) => {
+    if (ctrlVPending) {
+      e.stopImmediatePropagation();
+      e.preventDefault();
+      ctrlVPending = false;
+    }
+  }, true);
 
   window.addEventListener("resize", () => fitAddon.fit());
 }
