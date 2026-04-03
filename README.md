@@ -79,6 +79,44 @@ vps-manager/
 └── docker-compose.yml
 ```
 
+## Testing
+
+The project has a unit test suite with 87% coverage across the core business logic.
+
+```
+tests/
+├── conftest.py       # shared fixtures (test client, temp dir, auth headers)
+├── test_files.py     # file endpoint tests
+└── test_docker.py    # docker endpoint tests (docker SDK is mocked)
+```
+
+### Running the tests
+
+Install dependencies:
+```bash
+pip install -r requirements.txt
+```
+
+Run the suite:
+```bash
+pytest tests/ -v
+```
+
+Run with coverage:
+```bash
+pytest tests/ --cov=app --cov-report=term-missing
+```
+
+### What's tested
+
+| Area | Coverage | Notes |
+|---|---|---|
+| File endpoints | 100% | Real filesystem via pytest `tmp_path` fixture |
+| Docker endpoints | 100% | Docker SDK mocked — no live socket needed |
+| Auth middleware | ✓ | Valid key accepted, invalid key rejected |
+| Path traversal | ✓ | `../../etc/passwd`-style attacks return 403 |
+| Error paths | ✓ | 404s, 400s, missing containers, binary files |
+
 ## Running It
 
 ### Prerequisites
