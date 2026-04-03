@@ -539,6 +539,7 @@ body {
 .action-btn.stop:hover { border-color: #e06c75; color: #e06c75; }
 .action-btn.restart:hover { border-color: #e5c07b; color: #e5c07b; }
 .action-btn.logs:hover { border-color: #569cd6; color: #569cd6; }
+.action-btn.live-logs:hover { border-color: #39c5cf; color: #39c5cf; }
 .action-btn.stats:hover { border-color: #c678dd; color: #c678dd; }
 .action-btn.env:hover { border-color: #e5c07b; color: #e5c07b; }
 .action-btn:disabled { opacity: 0.35; cursor: not-allowed; pointer-events: none; }

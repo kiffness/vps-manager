@@ -453,6 +453,14 @@ async function loadContainers() {
       toggleEnv(c.id, envPanel, envBtn),
     );
 
+    const liveLogsPanel = document.createElement("div");
+    liveLogsPanel.className = "logs-panel";
+
+    const liveLogsBtn = makeActionBtn("Live Logs", "live-logs", () =>
+      toggleLiveLogs(c.id, liveLogsPanel, liveLogsBtn),
+    );
+    if (!isRunning) liveLogsBtn.disabled = true;
+
     row.appendChild(
       makeActionBtn("Start", "start", () => containerAction(c.id, "start")),
     );
@@ -467,11 +475,13 @@ async function loadContainers() {
     row.appendChild(logsBtn);
     row.appendChild(statsBtn);
     row.appendChild(envBtn);
+    row.appendChild(liveLogsBtn);
 
     card.appendChild(row);
     card.appendChild(logsPanel);
     card.appendChild(statsPanel);
     card.appendChild(envPanel);
+    card.appendChild(liveLogsPanel);
     list.appendChild(card);
   }
 }
@@ -542,6 +552,40 @@ async function toggleEnv(id, panel, btn) {
   }
   panel.style.display = "block";
   btn.textContent = "Hide Env";
+}
+
+const activeLiveLogSources = new Map();
+
+function toggleLiveLogs(id, panel, btn) {
+  // If already streaming, stop it
+  if (activeLiveLogSources.has(id)) {
+    activeLiveLogSources.get(id).close();
+    activeLiveLogSources.delete(id);
+    panel.style.display = "none";
+    btn.textContent = "Live Logs";
+    return;
+  }
+
+  panel.textContent = "";
+  panel.style.display = "block";
+  btn.textContent = "Stop Logs";
+
+  const key = getApiKey();
+  const es = new EventSource(`/docker/containers/${id}/logs/stream?api_key=${encodeURIComponent(key)}`);
+  activeLiveLogSources.set(id, es);
+
+  es.onmessage = (e) => {
+    const line = document.createElement("div");
+    line.textContent = e.data;
+    panel.appendChild(line);
+    panel.scrollTop = panel.scrollHeight;
+  };
+
+  es.onerror = () => {
+    es.close();
+    activeLiveLogSources.delete(id);
+    btn.textContent = "Live Logs";
+  };
 }
 
 async function toggleLogs(id, panel, btn) {

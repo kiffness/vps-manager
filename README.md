@@ -16,11 +16,16 @@ A self-hosted web UI for managing a Linux VPS — built with FastAPI and vanilla
 - View and edit files in-browser using Monaco Editor (the editor that powers VS Code)
 - Save changes directly to the server
 - Upload files via drag-and-drop or file picker
+- Download files directly from the browser
+- Create new files and folders from the UI
 
 ![Files](assets/Files%20Showcase.gif)
 
 **Docker**
-- View all containers with live status, start/stop/restart controls and log viewer
+- View all containers with live status, start/stop/restart controls
+- Per-container CPU and memory stats
+- View environment variables on any container
+- Live log streaming via SSE — tail logs in real time from the browser
 - Browse networks, volumes, and images
 - Filter images by usage and bulk-delete unused ones
 
@@ -34,7 +39,9 @@ A self-hosted web UI for managing a Linux VPS — built with FastAPI and vanilla
 ![Terminal](assets/Terminal%20Showcase.gif)
 
 **Server Resources**
-- Live CPU, memory, and disk usage streamed via SSE
+- Live CPU, memory, disk, and network I/O streamed via SSE
+- Server uptime
+- Top processes by CPU usage
 
 ![Server](assets/Server%20Section.gif)
 
@@ -85,7 +92,7 @@ vps-manager/
 
 ## Testing
 
-The project has a unit test suite with 87% coverage across the core business logic.
+The project has a unit test suite with 43 tests across the core business logic.
 
 ```
 tests/

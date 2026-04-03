@@ -159,6 +159,40 @@ def test_get_container_env_not_found(client):
 
     assert response.status_code == HTTPStatus.NOT_FOUND
 
+# ── Live log stream ────────────────────────────────────────────────────────────
+
+def test_stream_container_logs(client):
+    # GET /docker/containers/{id}/logs/stream should stream log lines as SSE
+    fake = make_fake_container()
+    fake.logs.return_value = iter([b"line one\n", b"line two\n"])
+
+    with patch("app.routers.docker_router.client") as mock_client:
+        mock_client.containers.get.return_value = fake
+        response = client.get(
+            "/docker/containers/abc123/logs/stream?api_key=test-key",
+            headers={"Accept": "text/event-stream"}
+        )
+
+    assert response.status_code == HTTPStatus.OK
+    assert "line one" in response.text
+    assert "line two" in response.text
+
+def test_stream_container_logs_not_found(client):
+    # Streaming logs for a missing container should return 404
+    import docker.errors
+    with patch("app.routers.docker_router.client") as mock_client:
+        mock_client.containers.get.side_effect = docker.errors.NotFound("not found")
+        response = client.get("/docker/containers/abc123/logs/stream?api_key=test-key")
+
+    assert response.status_code == HTTPStatus.NOT_FOUND
+
+def test_stream_container_logs_invalid_key(client):
+    # A wrong API key should return 403
+    with patch("app.routers.docker_router.client"):
+        response = client.get("/docker/containers/abc123/logs/stream?api_key=wrong")
+
+    assert response.status_code == HTTPStatus.FORBIDDEN
+
 # ── Logs ───────────────────────────────────────────────────────────────────────
 
 def test_get_container_logs(client):

@@ -7,7 +7,7 @@ from fastapi.responses import FileResponse
 
 from app.config import settings
 from app.routers.files import router as files_router, download_router
-from app.routers.docker_router import router as docker_router
+from app.routers.docker_router import router as docker_router, log_stream_router
 from app.routers.server_resources import router as server_resources_router
 from app.routers.terminal import router as terminal_router
 from app.dependancy.api_key_dependency import verify_api_key
@@ -29,13 +29,14 @@ app = FastAPI(
     description=(
         "A lightweight python api that sits over my vps so I can run commands and browse the files"
     ),
-    version="1.2.0",
+    version="1.3.0",
     lifespan=lifespan,
 )
 
 app.include_router(files_router, dependencies=[Depends(verify_api_key)])
 app.include_router(download_router)
 app.include_router(docker_router, dependencies=[Depends(verify_api_key)])
+app.include_router(log_stream_router)
 app.include_router(server_resources_router)
 app.include_router(terminal_router)
 
