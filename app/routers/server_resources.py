@@ -22,6 +22,10 @@ async def stream_resources(api_key: str = Query(...)):
 
     async def event_generator():
         try:
+            # Take an initial network reading — rates are calculated as delta per tick
+            prev_net = psutil.net_io_counters()
+            prev_time = time.time()
+
             while True:
                 disk = psutil.disk_usage('/')
 
@@ -31,6 +35,14 @@ async def stream_resources(api_key: str = Query(...)):
                 minutes = remainder // 60
                 uptime = f"{days}d {hours}h {minutes}m"
 
+                curr_net = psutil.net_io_counters()
+                curr_time = time.time()
+                elapsed = curr_time - prev_time
+                net_sent = (curr_net.bytes_sent - prev_net.bytes_sent) / elapsed
+                net_recv = (curr_net.bytes_recv - prev_net.bytes_recv) / elapsed
+                prev_net = curr_net
+                prev_time = curr_time
+
                 data = ResourcesResponse(
                     cpu_percentage=psutil.cpu_percent(interval=1),
                     memory_usage=psutil.virtual_memory().percent,
@@ -38,6 +50,8 @@ async def stream_resources(api_key: str = Query(...)):
                     disk_total_gb=round(disk.total / 1024 ** 3, 2),
                     disk_percent=disk.percent,
                     uptime=uptime,
+                    net_sent_bytes_per_sec=round(net_sent, 1),
+                    net_recv_bytes_per_sec=round(net_recv, 1),
                 )
                 yield f"data: {data.model_dump_json()}\n\n"
                 await asyncio.sleep(2)

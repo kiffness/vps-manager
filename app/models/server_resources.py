@@ -7,6 +7,8 @@ class ResourcesResponse(BaseModel):
     disk_total_gb: float
     disk_percent: float
     uptime: str
+    net_sent_bytes_per_sec: float
+    net_recv_bytes_per_sec: float
 
 class ProcessInfo(BaseModel):
     pid: int

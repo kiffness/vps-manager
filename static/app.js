@@ -648,6 +648,12 @@ document.querySelectorAll(".copy-btn").forEach((btn) => {
 
 // ── Server resources ──────────────────────────────────────────────────────────
 
+function formatBytes(bytesPerSec) {
+  if (bytesPerSec >= 1024 * 1024) return `${(bytesPerSec / 1024 / 1024).toFixed(1)} MB/s`;
+  if (bytesPerSec >= 1024) return `${(bytesPerSec / 1024).toFixed(1)} KB/s`;
+  return `${bytesPerSec.toFixed(0)} B/s`;
+}
+
 let resourceEventSource = null;
 
 function startResourceStream() {
@@ -663,6 +669,8 @@ function startResourceStream() {
     document.getElementById("mem-value").textContent = `${d.memory_usage.toFixed(1)}%`;
     document.getElementById("disk-value").textContent = `${d.disk_used_gb} / ${d.disk_total_gb} GB`;
     document.getElementById("uptime-value").textContent = d.uptime;
+    document.getElementById("net-sent-value").textContent = formatBytes(d.net_sent_bytes_per_sec);
+    document.getElementById("net-recv-value").textContent = formatBytes(d.net_recv_bytes_per_sec);
 
     // Detail panels
     document.getElementById("cpu-detail-value").textContent = `${d.cpu_percentage.toFixed(1)}%`;
@@ -674,6 +682,9 @@ function startResourceStream() {
     document.getElementById("disk-detail-value").textContent =
       `${d.disk_used_gb} GB used of ${d.disk_total_gb} GB (${d.disk_percent.toFixed(1)}%)`;
     document.getElementById("disk-bar").style.width = `${d.disk_percent}%`;
+
+    document.getElementById("net-sent-detail").textContent = formatBytes(d.net_sent_bytes_per_sec);
+    document.getElementById("net-recv-detail").textContent = formatBytes(d.net_recv_bytes_per_sec);
   };
 }
 

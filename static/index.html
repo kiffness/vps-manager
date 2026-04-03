@@ -110,6 +110,14 @@
                 <span class="stat-tile-label">Uptime</span>
                 <span class="stat-tile-value" id="uptime-value">—</span>
             </div>
+            <div class="stat-tile">
+                <span class="stat-tile-label">Network ↑</span>
+                <span class="stat-tile-value" id="net-sent-value">—</span>
+            </div>
+            <div class="stat-tile">
+                <span class="stat-tile-label">Network ↓</span>
+                <span class="stat-tile-value" id="net-recv-value">—</span>
+            </div>
         </div>
 
         <!-- Detail panels -->
@@ -133,6 +141,17 @@
                 <div class="detail-value" id="disk-detail-value">—</div>
                 <div class="detail-bar-track">
                     <div class="detail-bar-fill" id="disk-bar"></div>
+                </div>
+            </div>
+            <div class="server-detail-card">
+                <div class="detail-label">Network I/O</div>
+                <div class="net-io-row">
+                    <span class="net-io-label">↑ Sent</span>
+                    <span class="detail-value" id="net-sent-detail">—</span>
+                </div>
+                <div class="net-io-row">
+                    <span class="net-io-label">↓ Received</span>
+                    <span class="detail-value" id="net-recv-detail">—</span>
                 </div>
             </div>
         </div>

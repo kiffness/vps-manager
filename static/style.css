@@ -607,7 +607,7 @@ body {
 /* Stat strip */
 .stat-strip {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(6, 1fr);
     gap: 12px;
     flex-shrink: 0;
 }
@@ -638,7 +638,7 @@ body {
 /* Detail panels */
 .server-detail-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 12px;
     flex: 1;
 }
@@ -695,6 +695,25 @@ body {
     white-space: pre-wrap;
     border-radius: 3px;
     border: 1px solid #333;
+}
+
+.net-io-row {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+}
+
+.net-io-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #555;
+    flex-shrink: 0;
+    width: 80px;
+}
+
+.net-io-row .detail-value {
+    font-size: 22px;
 }
 
 /* ── Process table ────────────────────────────────────────────────────────── */
