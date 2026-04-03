@@ -132,6 +132,33 @@ def test_get_container_stats(client):
         assert data["memory_usage_bytes"] == 114466816
         assert data["memory_limit_bytes"] == 33590267904
 
+# ── Env vars ──────────────────────────────────────────────────────────────────
+
+def test_get_container_env(client):
+    # GET /docker/containers/{id}/env should return parsed key/value env vars
+    fake = make_fake_container()
+    fake.attrs = {"Config": {"Env": ["KEY=value", "PATH=/usr/bin", "EQUAL=a=b"]}}
+
+    with patch("app.routers.docker_router.client") as mock_client:
+        mock_client.containers.get.return_value = fake
+        response = client.get("/docker/containers/abc123/env", headers=AUTH_HEADERS)
+
+    assert response.status_code == HTTPStatus.OK
+    env = {v["key"]: v["value"] for v in response.json()["env"]}
+    assert env["KEY"] == "value"
+    assert env["PATH"] == "/usr/bin"
+    # Values that contain = should not be split incorrectly
+    assert env["EQUAL"] == "a=b"
+
+def test_get_container_env_not_found(client):
+    # Requesting env for a missing container should return 404
+    import docker.errors
+    with patch("app.routers.docker_router.client") as mock_client:
+        mock_client.containers.get.side_effect = docker.errors.NotFound("not found")
+        response = client.get("/docker/containers/abc123/env", headers=AUTH_HEADERS)
+
+    assert response.status_code == HTTPStatus.NOT_FOUND
+
 # ── Logs ───────────────────────────────────────────────────────────────────────
 
 def test_get_container_logs(client):

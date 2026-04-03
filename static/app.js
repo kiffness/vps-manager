@@ -383,6 +383,13 @@ async function loadContainers() {
     );
     if (!isRunning) statsBtn.disabled = true;
 
+    const envPanel = document.createElement("div");
+    envPanel.className = "env-panel";
+
+    const envBtn = makeActionBtn("Env", "env", () =>
+      toggleEnv(c.id, envPanel, envBtn),
+    );
+
     row.appendChild(
       makeActionBtn("Start", "start", () => containerAction(c.id, "start")),
     );
@@ -396,10 +403,12 @@ async function loadContainers() {
     );
     row.appendChild(logsBtn);
     row.appendChild(statsBtn);
+    row.appendChild(envBtn);
 
     card.appendChild(row);
     card.appendChild(logsPanel);
     card.appendChild(statsPanel);
+    card.appendChild(envPanel);
     list.appendChild(card);
   }
 }
@@ -446,6 +455,30 @@ async function toggleStats(id, panel, btn) {
   `;
   panel.style.display = "block";
   btn.textContent = "Hide Stats";
+}
+
+async function toggleEnv(id, panel, btn) {
+  if (panel.style.display === "block") {
+    panel.style.display = "none";
+    btn.textContent = "Env";
+    return;
+  }
+  const res = await apiFetch(`/docker/containers/${id}/env`);
+  if (!res.ok) return;
+  const data = await res.json();
+
+  if (!data.env.length) {
+    panel.innerHTML = `<span class="stats-label">No environment variables</span>`;
+  } else {
+    panel.innerHTML = data.env.map(v => `
+      <div class="env-row">
+        <span class="env-key">${v.key}</span>
+        <span class="env-value">${v.value}</span>
+      </div>
+    `).join("");
+  }
+  panel.style.display = "block";
+  btn.textContent = "Hide Env";
 }
 
 async function toggleLogs(id, panel, btn) {

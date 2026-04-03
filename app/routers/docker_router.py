@@ -2,7 +2,8 @@ import docker
 import docker.errors
 
 from app.models.docker import (ContainerResponse, ContainerActionRequest, ContainerLogsResponse,
-                               NetworkResponse, ImageResponse, VolumeResponse, ContainerStatsResponse)
+                               NetworkResponse, ImageResponse, VolumeResponse,
+                               ContainerStatsResponse, EnvVar, ContainerEnvResponse)
 from fastapi import APIRouter, HTTPException
 
 client = docker.from_env()
@@ -82,6 +83,20 @@ async def get_container_stats(container_id: str):
         )
     except docker.errors.NotFound:
           raise HTTPException(status_code=404, detail="Container not found")
+
+@router.get("/containers/{container_id}/env", response_model=ContainerEnvResponse)
+async def get_container_env(container_id: str):
+    try:
+        container = client.containers.get(container_id)
+        raw_env = container.attrs["Config"]["Env"] or []
+        env_vars = []
+        for entry in raw_env:
+            # Each entry is "KEY=value" — split on first = only to handle values that contain =
+            key, _, value = entry.partition("=")
+            env_vars.append(EnvVar(key=key, value=value))
+        return ContainerEnvResponse(id=container.id, env=env_vars)
+    except docker.errors.NotFound:
+        raise HTTPException(status_code=404, detail="Container not found")
 
 @router.get("/containers/{container_id}", response_model=ContainerLogsResponse)
 async def get_container_log(container_id: str):

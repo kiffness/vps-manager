@@ -38,3 +38,11 @@ class ContainerStatsResponse(BaseModel):
     cpu_percent: float
     memory_usage_bytes: int
     memory_limit_bytes: int
+
+class EnvVar(BaseModel):
+    key: str
+    value: str
+
+class ContainerEnvResponse(BaseModel):
+    id: str
+    env: list[EnvVar]
