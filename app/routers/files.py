@@ -100,7 +100,7 @@ async def upload_files(path: str = Form(...), files: List[UploadFile] =File(...)
 
         response.append(FileUploadResponse(
             filename=file.filename,
-            path=dest_path
+            path=str(dest_path)
         ))
     
     return response
