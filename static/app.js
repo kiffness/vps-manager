@@ -665,6 +665,7 @@ function startResourceStream() {
     document.getElementById("disk-value").textContent =
       `${d.disk_used_gb} / ${d.disk_total_gb} GB (${d.disk_percent.toFixed(1)}%)`;
     document.getElementById("disk-bar").style.width = `${d.disk_percent}%`;
+    document.getElementById("uptime-value").textContent = d.uptime;
   };
 }
 

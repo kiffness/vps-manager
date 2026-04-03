@@ -6,3 +6,4 @@ class ResourcesResponse(BaseModel):
     disk_used_gb: float
     disk_total_gb: float
     disk_percent: float
+    uptime: str
