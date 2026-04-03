@@ -5,7 +5,7 @@ from fastapi.responses import FileResponse
 from pathlib import Path
 from typing import List
 
-from app.models.files import ListDirectoryResponse, FileContentResponse, WriteFileRequest, FileUploadResponse
+from app.models.files import ListDirectoryResponse, FileContentResponse, WriteFileRequest, FileUploadResponse, CreateRequest
 from app.config import settings
 from app.dependancy.api_key_dependency import verify_api_key
 
@@ -99,6 +99,23 @@ async def download_file(file: str = "", api_key: str = Query(...)):
         filename=resolved.name,
         media_type="application/octet-stream"
     )
+
+@router.post("/create", status_code=status.HTTP_201_CREATED)
+async def create(body: CreateRequest):
+    resolved = resolve_and_check(body.path, check_exists=False)
+
+    if resolved.exists():
+        raise HTTPException(status_code=409, detail="Path already exists")
+
+    if body.type == "directory":
+        resolved.mkdir(parents=True, exist_ok=False)
+    elif body.type == "file":
+        resolved.parent.mkdir(parents=True, exist_ok=True)
+        resolved.touch()
+    else:
+        raise HTTPException(status_code=400, detail="type must be 'file' or 'directory'")
+
+    return {"message": "Created"}
 
 @router.delete("/")
 async def delete(path: str = ""):

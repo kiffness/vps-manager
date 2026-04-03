@@ -111,6 +111,48 @@ def test_path_traversal_blocked(file_client):
     response = file_client.get("/api/files/content?file=../../etc/passwd", headers=AUTH_HEADERS)
     assert response.status_code == HTTPStatus.FORBIDDEN
 
+# ── Create ─────────────────────────────────────────────────────────────────────
+
+def test_create_file(file_client, tmp_path):
+    # Creating a file should produce an empty file on disk
+    response = file_client.post(
+        "/api/files/create",
+        json={"path": "newfile.txt", "type": "file"},
+        headers=AUTH_HEADERS
+    )
+    assert response.status_code == HTTPStatus.CREATED
+    assert (tmp_path / "newfile.txt").exists()
+    assert (tmp_path / "newfile.txt").is_file()
+
+def test_create_directory(file_client, tmp_path):
+    # Creating a directory should produce a folder on disk
+    response = file_client.post(
+        "/api/files/create",
+        json={"path": "newdir", "type": "directory"},
+        headers=AUTH_HEADERS
+    )
+    assert response.status_code == HTTPStatus.CREATED
+    assert (tmp_path / "newdir").is_dir()
+
+def test_create_already_exists(file_client, tmp_path):
+    # Creating a path that already exists should return 409 Conflict
+    (tmp_path / "existing.txt").write_text("already here")
+    response = file_client.post(
+        "/api/files/create",
+        json={"path": "existing.txt", "type": "file"},
+        headers=AUTH_HEADERS
+    )
+    assert response.status_code == HTTPStatus.CONFLICT
+
+def test_create_invalid_type(file_client):
+    # An unrecognised type should return 400
+    response = file_client.post(
+        "/api/files/create",
+        json={"path": "something", "type": "symlink"},
+        headers=AUTH_HEADERS
+    )
+    assert response.status_code == HTTPStatus.BAD_REQUEST
+
 # ── Download ───────────────────────────────────────────────────────────────────
 
 def test_download_file(file_client, tmp_path):

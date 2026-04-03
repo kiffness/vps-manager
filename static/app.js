@@ -333,6 +333,55 @@ async function deleteEntry(path, name) {
   }
 }
 
+// ── Create file / folder ──────────────────────────────────────────────────────
+
+let pendingCreateType = null;
+
+function showNewItemInput(type) {
+  pendingCreateType = type;
+  const row = document.getElementById("new-item-input-row");
+  const input = document.getElementById("new-item-input");
+  input.placeholder = type === "file" ? "filename.txt" : "folder-name";
+  input.value = "";
+  row.style.display = "flex";
+  input.focus();
+}
+
+document.getElementById("new-file-btn").addEventListener("click", () => showNewItemInput("file"));
+document.getElementById("new-folder-btn").addEventListener("click", () => showNewItemInput("folder"));
+
+document.getElementById("new-item-input").addEventListener("keydown", async (e) => {
+  if (e.key === "Escape") {
+    document.getElementById("new-item-input-row").style.display = "none";
+    pendingCreateType = null;
+    return;
+  }
+  if (e.key !== "Enter") return;
+
+  const name = e.target.value.trim();
+  if (!name) return;
+
+  const path = currentDirectory ? `${currentDirectory}/${name}` : name;
+  const type = pendingCreateType === "file" ? "file" : "directory";
+
+  const res = await apiFetch("/api/files/create", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ path, type }),
+  });
+
+  document.getElementById("new-item-input-row").style.display = "none";
+  pendingCreateType = null;
+
+  if (res.ok) {
+    delete treeCache[currentDirectory];
+    refreshTree();
+  } else {
+    const data = await res.json();
+    showStatus(data.detail || "Create failed", true);
+  }
+});
+
 // ── Status message ────────────────────────────────────────────────────────────
 
 function showStatus(msg, isError = false) {

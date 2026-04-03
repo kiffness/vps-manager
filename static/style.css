@@ -161,6 +161,44 @@ body {
     color: #bbb;
     padding: 10px 12px 6px;
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+#tree-actions {
+    display: flex;
+    gap: 2px;
+}
+
+.tree-action-btn {
+    background: none;
+    border: none;
+    color: #888;
+    cursor: pointer;
+    padding: 2px 4px;
+    border-radius: 3px;
+    font-size: 14px;
+    line-height: 1;
+}
+
+.tree-action-btn:hover { color: #d4d4d4; background: #2a2d2e; }
+
+#new-item-input-row {
+    padding: 4px 8px;
+    flex-shrink: 0;
+}
+
+#new-item-input {
+    width: 100%;
+    background: #1e1e1e;
+    border: 1px solid #007acc;
+    color: #d4d4d4;
+    padding: 4px 6px;
+    font-family: inherit;
+    font-size: 12px;
+    border-radius: 3px;
+    outline: none;
 }
 
 #file-tree {

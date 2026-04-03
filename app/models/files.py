@@ -13,6 +13,10 @@ class WriteFileRequest(BaseModel):
     path: str
     content: str
 
+class CreateRequest(BaseModel):
+    path: str
+    type: str  # "file" or "directory"
+
 class FileUploadResponse(BaseModel):
     filename: str
     path: str

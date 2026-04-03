@@ -34,7 +34,20 @@
         <div id="explorer-layout">
 
             <div id="file-tree-panel">
-                <div id="tree-header">EXPLORER</div>
+                <div id="tree-header">
+                    <span>EXPLORER</span>
+                    <div id="tree-actions">
+                        <button id="new-file-btn" title="New File" class="tree-action-btn">
+                            <span class="codicon codicon-new-file"></span>
+                        </button>
+                        <button id="new-folder-btn" title="New Folder" class="tree-action-btn">
+                            <span class="codicon codicon-new-folder"></span>
+                        </button>
+                    </div>
+                </div>
+                <div id="new-item-input-row" style="display:none">
+                    <input id="new-item-input" type="text" placeholder="Name..." />
+                </div>
                 <div id="file-tree"></div>
                 <div id="upload-dropzone">Drop files to upload</div>
                 <input type="file" id="upload-input" multiple style="display:none">
