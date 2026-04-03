@@ -75,6 +75,10 @@ vps-manager/
 │   ├── index.html
 │   ├── app.js
 │   └── style.css
+├── tests/
+│   ├── conftest.py              # shared fixtures (test client, temp dir)
+│   ├── test_files.py            # file endpoint tests
+│   └── test_docker.py           # docker endpoint tests (SDK mocked)
 ├── Dockerfile
 └── docker-compose.yml
 ```
