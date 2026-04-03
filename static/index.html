@@ -136,6 +136,25 @@
                 </div>
             </div>
         </div>
+
+        <!-- Processes table -->
+        <div class="process-section">
+            <div class="process-header">
+                <span class="detail-label">Top Processes</span>
+                <button id="refresh-processes-btn">Refresh</button>
+            </div>
+            <table class="process-table">
+                <thead>
+                    <tr>
+                        <th>PID</th>
+                        <th>Name</th>
+                        <th>CPU %</th>
+                        <th>Memory %</th>
+                    </tr>
+                </thead>
+                <tbody id="process-list"></tbody>
+            </table>
+        </div>
     </div>
 
     <div id="tab-cheatsheet" class="tab-section cheatsheet" style="display:none">

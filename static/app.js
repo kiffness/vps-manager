@@ -73,8 +73,10 @@ document.querySelectorAll(".tab-btn").forEach((btn) => {
       .forEach((s) => (s.style.display = "none"));
     document.getElementById(`tab-${tab}`).style.display = "flex";
     if (tab === "docker") loadDockerDashboard();
-    if (tab === "server") startResourceStream();
-    else stopResourceStream();
+    if (tab === "server") {
+      startResourceStream();
+      loadProcesses();
+    } else stopResourceStream();
     if (tab === "terminal") initTerminal();
   });
 });
@@ -681,6 +683,33 @@ function stopResourceStream() {
     resourceEventSource = null;
   }
 }
+
+async function loadProcesses() {
+  const btn = document.getElementById("refresh-processes-btn");
+  btn.textContent = "Refreshing...";
+  btn.disabled = true;
+
+  const key = getApiKey();
+  const res = await apiFetch(`/server-resources/processes?api_key=${encodeURIComponent(key)}`);
+
+  btn.textContent = "Refresh";
+  btn.disabled = false;
+
+  if (!res.ok) return;
+  const processes = await res.json();
+
+  const tbody = document.getElementById("process-list");
+  tbody.innerHTML = processes.map(p => `
+    <tr>
+      <td class="process-pid">${p.pid}</td>
+      <td class="process-name">${p.name}</td>
+      <td class="process-cpu">${p.cpu_percent}%</td>
+      <td class="process-mem">${p.memory_percent}%</td>
+    </tr>
+  `).join("");
+}
+
+document.getElementById("refresh-processes-btn").addEventListener("click", loadProcesses);
 
 // ── Boot ──────────────────────────────────────────────────────────────────────
 

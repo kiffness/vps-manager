@@ -5,7 +5,7 @@ from fastapi import APIRouter, Query, HTTPException
 from fastapi.responses import StreamingResponse
 
 from app.config import settings
-from app.models.server_resources import ResourcesResponse
+from app.models.server_resources import ResourcesResponse, ProcessInfo
 
 router = APIRouter(
     prefix="/server-resources",
@@ -45,3 +45,31 @@ async def stream_resources(api_key: str = Query(...)):
             pass
 
     return StreamingResponse(event_generator(), media_type="text/event-stream")
+
+@router.get("/processes", response_model=list[ProcessInfo])
+async def get_processes(api_key: str = Query(...)):
+    if api_key != settings.api_key:
+        raise HTTPException(status_code=403, detail="Invalid API key")
+
+    processes = []
+    for proc in psutil.process_iter(['pid', 'name', 'cpu_percent', 'memory_percent']):
+        try:
+            info = proc.info
+            cpu = round(info['cpu_percent'] or 0.0, 1)
+
+            # Skip Windows system noise (System Idle Process reports accumulated idle time)
+            if cpu > 100:
+                continue
+
+            processes.append(ProcessInfo(
+                pid=info['pid'],
+                name=info['name'],
+                cpu_percent=cpu,
+                memory_percent=round(info['memory_percent'] or 0.0, 2),
+            ))
+        except (psutil.NoSuchProcess, psutil.AccessDenied):
+            # Process may have exited or be inaccessible — skip it
+            continue
+
+    processes.sort(key=lambda p: p.cpu_percent, reverse=True)
+    return processes[:15]
