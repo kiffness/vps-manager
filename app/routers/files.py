@@ -1,11 +1,13 @@
 import shutil
 
-from fastapi import APIRouter, HTTPException, status, File, UploadFile, Form
+from fastapi import APIRouter, HTTPException, status, File, UploadFile, Form, Query
+from fastapi.responses import FileResponse
 from pathlib import Path
 from typing import List
 
 from app.models.files import ListDirectoryResponse, FileContentResponse, WriteFileRequest, FileUploadResponse
 from app.config import settings
+from app.dependancy.api_key_dependency import verify_api_key
 
 base = Path(settings.base_dir).resolve()
 
@@ -16,6 +18,12 @@ router = APIRouter(
         404: {"description": "Not found"},
         403: {"description": "forbidden"}
         }
+)
+
+# Separate router for endpoints that authenticate via query param (e.g. browser downloads)
+download_router = APIRouter(
+    prefix="/api/files",
+    tags=["files"],
 )
 
 def resolve_and_check(path: str, check_exists: bool = True) -> Path:
@@ -74,6 +82,23 @@ async def write_content(body: WriteFileRequest):
     resolved.write_text(body.content, encoding="utf-8")
 
     return {"message": "File content succesfully updated"}
+
+@download_router.get("/download")
+async def download_file(file: str = "", api_key: str = Query(...)):
+    # Download uses a query param for auth since browser <a> tags can't set headers
+    if api_key != settings.api_key:
+        raise HTTPException(status_code=403, detail="Invalid API key")
+
+    resolved = resolve_and_check(file)
+
+    if not resolved.is_file():
+        raise HTTPException(status_code=400, detail="Path is not a file")
+
+    return FileResponse(
+        path=resolved,
+        filename=resolved.name,
+        media_type="application/octet-stream"
+    )
 
 @router.delete("/")
 async def delete(path: str = ""):

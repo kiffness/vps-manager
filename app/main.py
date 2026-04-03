@@ -6,7 +6,7 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
 
 from app.config import settings
-from app.routers.files import router as files_router
+from app.routers.files import router as files_router, download_router
 from app.routers.docker_router import router as docker_router
 from app.routers.server_resources import router as server_resources_router
 from app.routers.terminal import router as terminal_router
@@ -34,6 +34,7 @@ app = FastAPI(
 )
 
 app.include_router(files_router, dependencies=[Depends(verify_api_key)])
+app.include_router(download_router)
 app.include_router(docker_router, dependencies=[Depends(verify_api_key)])
 app.include_router(server_resources_router)
 app.include_router(terminal_router)

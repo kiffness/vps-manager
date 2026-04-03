@@ -323,7 +323,7 @@ body {
     font-size: 13px;
 }
 
-#save-btn, #close-btn {
+#save-btn, #download-btn, #close-btn {
     padding: 3px 12px;
     border-radius: 2px;
     cursor: pointer;
@@ -338,6 +338,13 @@ body {
 }
 
 #save-btn:hover { background: #1177bb; }
+
+#download-btn {
+    background: #3a3a3a;
+    color: #d4d4d4;
+}
+
+#download-btn:hover { background: #4a4a4a; }
 
 #close-btn {
     background: #3a3a3a;

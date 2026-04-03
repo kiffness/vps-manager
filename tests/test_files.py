@@ -111,6 +111,27 @@ def test_path_traversal_blocked(file_client):
     response = file_client.get("/api/files/content?file=../../etc/passwd", headers=AUTH_HEADERS)
     assert response.status_code == HTTPStatus.FORBIDDEN
 
+# ── Download ───────────────────────────────────────────────────────────────────
+
+def test_download_file(file_client, tmp_path):
+    # Downloading a file should return its bytes with content-disposition attachment
+    (tmp_path / "report.txt").write_text("download me")
+    response = file_client.get("/api/files/download?file=report.txt&api_key=test-key")
+    assert response.status_code == HTTPStatus.OK
+    assert response.content == b"download me"
+    assert "attachment" in response.headers["content-disposition"]
+
+def test_download_invalid_api_key(file_client):
+    # A wrong API key on the download endpoint should return 403
+    response = file_client.get("/api/files/download?file=report.txt&api_key=wrong")
+    assert response.status_code == HTTPStatus.FORBIDDEN
+
+def test_download_directory(file_client, tmp_path):
+    # Trying to download a directory should return 400
+    (tmp_path / "mydir").mkdir()
+    response = file_client.get("/api/files/download?file=mydir&api_key=test-key")
+    assert response.status_code == HTTPStatus.BAD_REQUEST
+
 # ── Upload ─────────────────────────────────────────────────────────────────────
 
 def test_upload_file(file_client, tmp_path):

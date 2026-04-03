@@ -289,6 +289,18 @@ document.getElementById("save-btn").addEventListener("click", async () => {
   showStatus(res.ok ? "Saved." : `Save failed: ${res.status}`, !res.ok);
 });
 
+// ── Download ──────────────────────────────────────────────────────────────────
+
+document.getElementById("download-btn").addEventListener("click", () => {
+  if (!currentFilePath) return;
+  const key = getApiKey();
+  const url = `/api/files/download?file=${encodeURIComponent(currentFilePath)}&api_key=${encodeURIComponent(key)}`;
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = currentFilePath.split("/").pop();
+  a.click();
+});
+
 // ── Close editor ──────────────────────────────────────────────────────────────
 
 document.getElementById("close-btn").addEventListener("click", () => {
