@@ -32,3 +32,9 @@ class VolumeResponse(BaseModel):
     driver: str
     mountpoint: str
     in_use: bool
+
+class ContainerStatsResponse(BaseModel):
+    id: str
+    cpu_percent: float
+    memory_usage_bytes: int
+    memory_limit_bytes: int

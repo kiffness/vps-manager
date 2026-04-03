@@ -2,7 +2,7 @@ import docker
 import docker.errors
 
 from app.models.docker import (ContainerResponse, ContainerActionRequest, ContainerLogsResponse,
-                               NetworkResponse, ImageResponse, VolumeResponse)
+                               NetworkResponse, ImageResponse, VolumeResponse, ContainerStatsResponse)
 from fastapi import APIRouter, HTTPException
 
 client = docker.from_env()
@@ -61,6 +61,27 @@ async def container_action(body: ContainerActionRequest):
         )
     except docker.errors.NotFound:
         raise HTTPException(status_code=404, detail="Container not found")
+    
+@router.get("/containers/{container_id}/stats", response_model=ContainerStatsResponse)
+async def get_container_stats(container_id: str):
+    try:
+        container = client.containers.get(container_id)
+        stats = container.stats(stream=False)
+
+        # CPU calculation
+        cpu_delta = stats["cpu_stats"]["cpu_usage"]["total_usage"] - stats["precpu_stats"]["cpu_usage"]["total_usage"]
+        system_delta = stats["cpu_stats"]["system_cpu_usage"] - stats["precpu_stats"]["system_cpu_usage"]
+        num_cpus = stats["cpu_stats"]["online_cpus"]
+        cpu_percent = (cpu_delta / system_delta) * num_cpus * 100
+
+        return ContainerStatsResponse(
+            id=container.id,
+            cpu_percent=round(cpu_percent, 2),
+            memory_usage_bytes=stats["memory_stats"]["usage"],
+            memory_limit_bytes=stats["memory_stats"]["limit"]
+        )
+    except docker.errors.NotFound:
+          raise HTTPException(status_code=404, detail="Container not found")
 
 @router.get("/containers/{container_id}", response_model=ContainerLogsResponse)
 async def get_container_log(container_id: str):

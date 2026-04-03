@@ -494,6 +494,8 @@ body {
 .action-btn.stop:hover { border-color: #e06c75; color: #e06c75; }
 .action-btn.restart:hover { border-color: #e5c07b; color: #e5c07b; }
 .action-btn.logs:hover { border-color: #569cd6; color: #569cd6; }
+.action-btn.stats:hover { border-color: #c678dd; color: #c678dd; }
+.action-btn:disabled { opacity: 0.35; cursor: not-allowed; pointer-events: none; }
 
 /* ── Cheat sheet ──────────────────────────────────────────────────────────── */
 
@@ -648,6 +650,40 @@ body {
     white-space: pre-wrap;
     border-radius: 3px;
     border: 1px solid #333;
+}
+
+/* ── Stats panel ──────────────────────────────────────────────────────────── */
+
+.stats-panel {
+    display: none;
+    margin-top: 10px;
+    background: #111;
+    padding: 10px 14px;
+    border-radius: 3px;
+    border: 1px solid #333;
+}
+
+.stats-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    border-bottom: 1px solid #1e1e1e;
+}
+
+.stats-row:last-child {
+    border-bottom: none;
+}
+
+.stats-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: #555;
+}
+
+.stats-value {
+    font-size: 12px;
+    color: #c678dd;
 }
 
 /* ── Terminal ─────────────────────────────────────────────────────────────── */

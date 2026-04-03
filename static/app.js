@@ -375,6 +375,14 @@ async function loadContainers() {
       toggleLogs(c.id, logsPanel, logsBtn),
     );
 
+    const statsPanel = document.createElement("div");
+    statsPanel.className = "stats-panel";
+
+    const statsBtn = makeActionBtn("Stats", "stats", () =>
+      toggleStats(c.id, statsPanel, statsBtn),
+    );
+    if (!isRunning) statsBtn.disabled = true;
+
     row.appendChild(
       makeActionBtn("Start", "start", () => containerAction(c.id, "start")),
     );
@@ -387,9 +395,11 @@ async function loadContainers() {
       ),
     );
     row.appendChild(logsBtn);
+    row.appendChild(statsBtn);
 
     card.appendChild(row);
     card.appendChild(logsPanel);
+    card.appendChild(statsPanel);
     list.appendChild(card);
   }
 }
@@ -409,6 +419,33 @@ async function containerAction(id, action) {
     body: JSON.stringify({ id, action }),
   });
   if (res.ok) loadContainers();
+}
+
+async function toggleStats(id, panel, btn) {
+  if (panel.style.display === "block") {
+    panel.style.display = "none";
+    btn.textContent = "Stats";
+    return;
+  }
+  const res = await apiFetch(`/docker/containers/${id}/stats`);
+  if (!res.ok) return;
+  const data = await res.json();
+
+  const memUsedMB = (data.memory_usage_bytes / 1024 / 1024).toFixed(1);
+  const memLimitGB = (data.memory_limit_bytes / 1024 / 1024 / 1024).toFixed(1);
+
+  panel.innerHTML = `
+    <div class="stats-row">
+      <span class="stats-label">CPU</span>
+      <span class="stats-value">${data.cpu_percent}%</span>
+    </div>
+    <div class="stats-row">
+      <span class="stats-label">Memory</span>
+      <span class="stats-value">${memUsedMB} MB / ${memLimitGB} GB</span>
+    </div>
+  `;
+  panel.style.display = "block";
+  btn.textContent = "Hide Stats";
 }
 
 async function toggleLogs(id, panel, btn) {

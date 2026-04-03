@@ -104,6 +104,34 @@ def test_container_not_found(client):
 
     assert response.status_code == HTTPStatus.NOT_FOUND
 
+def test_get_container_stats(client):
+    fake = make_fake_container()
+    fake.stats.return_value = {
+        "cpu_stats": {
+            "cpu_usage": {"total_usage": 1100},
+            "system_cpu_usage": 200000,
+            "online_cpus": 2
+        },
+        "precpu_stats": {
+            "cpu_usage": {"total_usage": 1000},
+            "system_cpu_usage": 100000
+        },
+        "memory_stats": {
+            "usage": 114466816,
+            "limit": 33590267904
+        }  
+    }
+
+    with patch("app.routers.docker_router.client") as mock_client:
+        mock_client.containers.get.return_value = fake
+        response = client.get("/docker/containers/abc123/stats", headers=AUTH_HEADERS)
+
+        assert response.status_code == HTTPStatus.OK
+        data = response.json()
+        assert data["cpu_percent"] == 0.2
+        assert data["memory_usage_bytes"] == 114466816
+        assert data["memory_limit_bytes"] == 33590267904
+
 # ── Logs ───────────────────────────────────────────────────────────────────────
 
 def test_get_container_logs(client):
