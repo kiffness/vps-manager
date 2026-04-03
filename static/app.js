@@ -656,16 +656,22 @@ function startResourceStream() {
   );
   resourceEventSource.onmessage = (e) => {
     const d = JSON.parse(e.data);
-    document.getElementById("cpu-value").textContent =
-      `${d.cpu_percentage.toFixed(1)}%`;
-    document.getElementById("cpu-bar").style.width = `${d.cpu_percentage}%`;
-    document.getElementById("mem-value").textContent =
-      `${d.memory_usage.toFixed(1)}%`;
-    document.getElementById("mem-bar").style.width = `${d.memory_usage}%`;
-    document.getElementById("disk-value").textContent =
-      `${d.disk_used_gb} / ${d.disk_total_gb} GB (${d.disk_percent.toFixed(1)}%)`;
-    document.getElementById("disk-bar").style.width = `${d.disk_percent}%`;
+    // Stat strip
+    document.getElementById("cpu-value").textContent = `${d.cpu_percentage.toFixed(1)}%`;
+    document.getElementById("mem-value").textContent = `${d.memory_usage.toFixed(1)}%`;
+    document.getElementById("disk-value").textContent = `${d.disk_used_gb} / ${d.disk_total_gb} GB`;
     document.getElementById("uptime-value").textContent = d.uptime;
+
+    // Detail panels
+    document.getElementById("cpu-detail-value").textContent = `${d.cpu_percentage.toFixed(1)}%`;
+    document.getElementById("cpu-bar").style.width = `${d.cpu_percentage}%`;
+
+    document.getElementById("mem-detail-value").textContent = `${d.memory_usage.toFixed(1)}%`;
+    document.getElementById("mem-bar").style.width = `${d.memory_usage}%`;
+
+    document.getElementById("disk-detail-value").textContent =
+      `${d.disk_used_gb} GB used of ${d.disk_total_gb} GB (${d.disk_percent.toFixed(1)}%)`;
+    document.getElementById("disk-bar").style.width = `${d.disk_percent}%`;
   };
 }
 

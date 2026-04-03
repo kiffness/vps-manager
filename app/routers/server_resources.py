@@ -21,24 +21,27 @@ async def stream_resources(api_key: str = Query(...)):
         raise HTTPException(status_code=403, detail="Invalid API key")
 
     async def event_generator():
-        while True:
-            disk = psutil.disk_usage('/')
+        try:
+            while True:
+                disk = psutil.disk_usage('/')
 
-            uptime_seconds = int(time.time() - psutil.boot_time())
-            days, remainder = divmod(uptime_seconds, 86400)
-            hours, remainder = divmod(remainder, 3600)
-            minutes = remainder // 60
-            uptime = f"{days}d {hours}h {minutes}m"
+                uptime_seconds = int(time.time() - psutil.boot_time())
+                days, remainder = divmod(uptime_seconds, 86400)
+                hours, remainder = divmod(remainder, 3600)
+                minutes = remainder // 60
+                uptime = f"{days}d {hours}h {minutes}m"
 
-            data = ResourcesResponse(
-                cpu_percentage=psutil.cpu_percent(interval=1),
-                memory_usage=psutil.virtual_memory().percent,
-                disk_used_gb=round(disk.used / 1024 ** 3, 2),
-                disk_total_gb=round(disk.total / 1024 ** 3, 2),
-                disk_percent=disk.percent,
-                uptime=uptime,
-            )
-            yield f"data: {data.model_dump_json()}\n\n"
-            await asyncio.sleep(2)
+                data = ResourcesResponse(
+                    cpu_percentage=psutil.cpu_percent(interval=1),
+                    memory_usage=psutil.virtual_memory().percent,
+                    disk_used_gb=round(disk.used / 1024 ** 3, 2),
+                    disk_total_gb=round(disk.total / 1024 ** 3, 2),
+                    disk_percent=disk.percent,
+                    uptime=uptime,
+                )
+                yield f"data: {data.model_dump_json()}\n\n"
+                await asyncio.sleep(2)
+        except asyncio.CancelledError:
+            pass
 
     return StreamingResponse(event_generator(), media_type="text/event-stream")

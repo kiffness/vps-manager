@@ -92,27 +92,47 @@
     </div>
 
     <div id="tab-server" class="tab-section" style="display:none">
-        <div class="docker-section">
-            <h2>Server Resources</h2>
-            <div class="resource-grid">
-                <div class="resource-card">
-                    <div class="resource-label">CPU</div>
-                    <div class="resource-value" id="cpu-value">—</div>
-                    <div class="resource-bar"><div class="resource-bar-fill" id="cpu-bar"></div></div>
+        <!-- Top stat strip -->
+        <div class="stat-strip">
+            <div class="stat-tile">
+                <span class="stat-tile-label">CPU</span>
+                <span class="stat-tile-value" id="cpu-value">—</span>
+            </div>
+            <div class="stat-tile">
+                <span class="stat-tile-label">Memory</span>
+                <span class="stat-tile-value" id="mem-value">—</span>
+            </div>
+            <div class="stat-tile">
+                <span class="stat-tile-label">Disk</span>
+                <span class="stat-tile-value" id="disk-value">—</span>
+            </div>
+            <div class="stat-tile">
+                <span class="stat-tile-label">Uptime</span>
+                <span class="stat-tile-value" id="uptime-value">—</span>
+            </div>
+        </div>
+
+        <!-- Detail panels -->
+        <div class="server-detail-grid">
+            <div class="server-detail-card">
+                <div class="detail-label">CPU Usage</div>
+                <div class="detail-value" id="cpu-detail-value">—</div>
+                <div class="detail-bar-track">
+                    <div class="detail-bar-fill" id="cpu-bar"></div>
                 </div>
-                <div class="resource-card">
-                    <div class="resource-label">Memory</div>
-                    <div class="resource-value" id="mem-value">—</div>
-                    <div class="resource-bar"><div class="resource-bar-fill" id="mem-bar"></div></div>
+            </div>
+            <div class="server-detail-card">
+                <div class="detail-label">Memory Usage</div>
+                <div class="detail-value" id="mem-detail-value">—</div>
+                <div class="detail-bar-track">
+                    <div class="detail-bar-fill" id="mem-bar"></div>
                 </div>
-                <div class="resource-card">
-                    <div class="resource-label">Disk</div>
-                    <div class="resource-value" id="disk-value">—</div>
-                    <div class="resource-bar"><div class="resource-bar-fill" id="disk-bar"></div></div>
-                </div>
-                <div class="resource-card">
-                    <div class="resource-label">Uptime</div>
-                    <div class="resource-value" id="uptime-value">—</div>
+            </div>
+            <div class="server-detail-card">
+                <div class="detail-label">Disk Usage</div>
+                <div class="detail-value" id="disk-detail-value">—</div>
+                <div class="detail-bar-track">
+                    <div class="detail-bar-fill" id="disk-bar"></div>
                 </div>
             </div>
         </div>
